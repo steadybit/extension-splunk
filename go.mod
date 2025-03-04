@@ -1,4 +1,4 @@
-module github.com/steadybit/extension-scaffold
+module github.com/steadybit/extension-splunk
 
 go 1.23.0
 

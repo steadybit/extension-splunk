@@ -1,15 +1,15 @@
 apiVersion: v2
-name: steadybit-extension-scaffold
+name: steadybit-extension-splunk
 description: Steadybit scaffold extension Helm chart for Kubernetes.
-version: 1.0.32 # replace with your version
-appVersion: 0.0.0 # replace with your version
+version: 1.0.0 # replace with your version
+appVersion: 0.0.1 # replace with your version
 home: https://www.steadybit.com/
 icon: https://steadybit-website-assets.s3.amazonaws.com/logo-symbol-transparent.png
 maintainers:
   - email: daniel.reuter@steadybit.com
     name: reuda
 sources:
-  - https://github.com/steadybit/extension-scaffold
+  - https://github.com/steadybit/extension-splunk
 annotations:
   artifacthub.io/images: |
     - name: logo
