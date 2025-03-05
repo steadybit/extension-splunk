@@ -23,6 +23,7 @@ import (
 	"github.com/steadybit/extension-splunk/config"
 	"github.com/steadybit/extension-splunk/extdetectors"
 	_ "go.uber.org/automaxprocs" // Importing automaxprocs automatically adjusts GOMAXPROCS.
+	"strings"
 )
 
 func main() {
@@ -41,7 +42,7 @@ func main() {
 	exthttp.RegisterHttpHandler("/", exthttp.GetterAsHandler(getExtensionList))
 
 	discovery_kit_sdk.Register(extdetectors.NewDetectorDiscovery())
-	//action_kit_sdk.RegisterAction(extalertrules.NewAlertRuleStateCheckAction())
+	action_kit_sdk.RegisterAction(extdetectors.NewDetectorStateCheckAction())
 
 	extsignals.ActivateSignalHandlers()
 
@@ -65,7 +66,7 @@ type ExtensionListResponse struct {
 
 func initRestyClient() {
 	extdetectors.RestyClient = resty.New()
-	extdetectors.RestyClient.SetBaseURL(config.Config.ApiBaseUrl)
+	extdetectors.RestyClient.SetBaseURL(strings.TrimRight(config.Config.ApiBaseUrl, "/"))
 	extdetectors.RestyClient.SetHeader("Authorization", "Bearer "+config.Config.AccessToken)
 	extdetectors.RestyClient.SetHeader("Content-Type", "application/json")
 }

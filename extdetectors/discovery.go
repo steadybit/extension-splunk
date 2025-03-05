@@ -1,9 +1,9 @@
 /*
- * Copyright 2024 steadybit GmbH. All rights reserved.
+ * Copyright 2025 steadybit GmbH. All rights reserved.
  */
 
 // SPDX-License-Identifier: MIT
-// SPDX-FileCopyrightText: 2022 Steadybit GmbH
+// SPDX-FileCopyrightText: 2025 Steadybit GmbH
 
 package extdetectors
 
@@ -33,24 +33,24 @@ const (
 	attributeDetectorOrigin   = "splunk.detector.detectorOrigin"
 )
 
-type alertDiscovery struct {
+type detectorDiscovery struct {
 }
 
 var (
-	_           discovery_kit_sdk.TargetDescriber    = (*alertDiscovery)(nil)
-	_           discovery_kit_sdk.AttributeDescriber = (*alertDiscovery)(nil)
+	_           discovery_kit_sdk.TargetDescriber    = (*detectorDiscovery)(nil)
+	_           discovery_kit_sdk.AttributeDescriber = (*detectorDiscovery)(nil)
 	RestyClient *resty.Client
 )
 
 func NewDetectorDiscovery() discovery_kit_sdk.TargetDiscovery {
-	discovery := &alertDiscovery{}
+	discovery := &detectorDiscovery{}
 	return discovery_kit_sdk.NewCachedTargetDiscovery(discovery,
 		discovery_kit_sdk.WithRefreshTargetsNow(),
 		discovery_kit_sdk.WithRefreshTargetsInterval(context.Background(), 1*time.Minute),
 	)
 }
 
-func (d *alertDiscovery) Describe() discovery_kit_api.DiscoveryDescription {
+func (d *detectorDiscovery) Describe() discovery_kit_api.DiscoveryDescription {
 	return discovery_kit_api.DiscoveryDescription{
 		Id: TargetType,
 		Discover: discovery_kit_api.DescribingEndpointReferenceWithCallInterval{
@@ -59,7 +59,7 @@ func (d *alertDiscovery) Describe() discovery_kit_api.DiscoveryDescription {
 	}
 }
 
-func (d *alertDiscovery) DescribeTarget() discovery_kit_api.TargetDescription {
+func (d *detectorDiscovery) DescribeTarget() discovery_kit_api.TargetDescription {
 	return discovery_kit_api.TargetDescription{
 		Id:       TargetType,
 		Label:    discovery_kit_api.PluralLabel{One: "Splunk detector", Other: "Splunk detectors"},
@@ -68,12 +68,12 @@ func (d *alertDiscovery) DescribeTarget() discovery_kit_api.TargetDescription {
 		Icon:     extutil.Ptr(targetIcon),
 		Table: discovery_kit_api.Table{
 			Columns: []discovery_kit_api.Column{
-				{Attribute: attributeID},
+				//{Attribute: attributeID},
 				{Attribute: attributeName},
 				{Attribute: attributeDescription},
-				{Attribute: attributeStatus},
-				{Attribute: attributeCreator},
-				{Attribute: attributeDetectorOrigin},
+				//{Attribute: attributeStatus},
+				//{Attribute: attributeCreator},
+				//{Attribute: attributeDetectorOrigin},
 			},
 			OrderBy: []discovery_kit_api.OrderBy{
 				{
@@ -85,7 +85,7 @@ func (d *alertDiscovery) DescribeTarget() discovery_kit_api.TargetDescription {
 	}
 }
 
-func (d *alertDiscovery) DescribeAttributes() []discovery_kit_api.AttributeDescription {
+func (d *detectorDiscovery) DescribeAttributes() []discovery_kit_api.AttributeDescription {
 	return []discovery_kit_api.AttributeDescription{
 		{
 			Attribute: attributeID,
@@ -127,7 +127,7 @@ func (d *alertDiscovery) DescribeAttributes() []discovery_kit_api.AttributeDescr
 	}
 }
 
-func (d *alertDiscovery) DiscoverTargets(ctx context.Context) ([]discovery_kit_api.Target, error) {
+func (d *detectorDiscovery) DiscoverTargets(ctx context.Context) ([]discovery_kit_api.Target, error) {
 	return getAllDetectors(ctx, RestyClient), nil
 }
 
@@ -169,5 +169,5 @@ func getAllDetectors(ctx context.Context, client *resty.Client) []discovery_kit_
 		}
 	}
 
-	return discovery_kit_commons.ApplyAttributeExcludes(result, config.Config.DiscoveryAttributesExcludesAlert)
+	return discovery_kit_commons.ApplyAttributeExcludes(result, config.Config.DiscoveryAttributesExcludesDetector)
 }

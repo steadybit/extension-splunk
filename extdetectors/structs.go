@@ -1,12 +1,17 @@
+/*
+ * Copyright 2025 steadybit GmbH. All rights reserved.
+ */
+
+// SPDX-License-Identifier: MIT
+// SPDX-FileCopyrightText: 2025 Steadybit GmbH
+
 package extdetectors
 
-// Response represents the top-level JSON structure.
 type Response struct {
 	Count   int        `json:"count"`
 	Results []Detector `json:"results"`
 }
 
-// Detector represents each detector object in the results.
 type Detector struct {
 	AuthorizedWriters            AuthorizedWriters      `json:"authorizedWriters"`
 	AutoOptimizationDisabled     bool                   `json:"autoOptimizationDisabled"`
@@ -36,7 +41,6 @@ type Detector struct {
 	VisualizationOptions         VisualizationOptions   `json:"visualizationOptions"`
 }
 
-// AuthorizedWriters represents the authorized writers object.
 type AuthorizedWriters struct {
 	Teams []string `json:"teams"`
 	Users []string `json:"users"`
@@ -48,14 +52,12 @@ type ImportQualifier struct {
 	Metric  string   `json:"metric"`
 }
 
-// Filter represents a filter within an import qualifier.
 type Filter struct {
 	Not      bool     `json:"not"`
 	Property string   `json:"property"`
 	Values   []string `json:"values"`
 }
 
-// Rule represents a rule within a detector.
 type Rule struct {
 	Description          string        `json:"description"`
 	DetectLabel          string        `json:"detectLabel"`
@@ -66,7 +68,6 @@ type Rule struct {
 	Severity             string        `json:"severity"`
 }
 
-// VisualizationOptions represents the visualizationOptions object.
 type VisualizationOptions struct {
 	DisableSampling     bool                 `json:"disableSampling"`
 	PublishLabelOptions []PublishLabelOption `json:"publishLabelOptions"`
@@ -75,7 +76,6 @@ type VisualizationOptions struct {
 	Time                TimeOptions          `json:"time"`
 }
 
-// PublishLabelOption represents each publish label option.
 type PublishLabelOption struct {
 	DisplayName  string  `json:"displayName"`
 	Label        string  `json:"label"`
@@ -85,9 +85,43 @@ type PublishLabelOption struct {
 	ValueUnit    *string `json:"valueUnit"`
 }
 
-// TimeOptions represents the time configuration under visualizationOptions.
 type TimeOptions struct {
 	Range    int64  `json:"range"`
 	RangeEnd int64  `json:"rangeEnd"`
 	Type     string `json:"type"`
+}
+
+type Incident struct {
+	Active                      bool    `json:"active"`
+	AnomalyState                string  `json:"anomalyState"`
+	AnomalyStateUpdateTimestamp int64   `json:"anomalyStateUpdateTimestamp"`
+	DetectLabel                 string  `json:"detectLabel"`
+	DetectorId                  string  `json:"detectorId"`
+	DetectorName                string  `json:"detectorName"`
+	DisplayBody                 string  `json:"displayBody"`
+	Events                      []Event `json:"events"`
+	IncidentId                  string  `json:"incidentId"`
+	IsMuted                     bool    `json:"isMuted"`
+	Severity                    string  `json:"severity"`
+	TriggeredNotificationSent   bool    `json:"triggeredNotificationSent"`
+	TriggeredWhileMuted         bool    `json:"triggeredWhileMuted"`
+}
+
+type Event struct {
+	AnomalyState     string                 `json:"anomalyState"`
+	DetectLabel      string                 `json:"detectLabel"`
+	DetectorId       string                 `json:"detectorId"`
+	DetectorName     string                 `json:"detectorName"`
+	EventAnnotations map[string]interface{} `json:"event_annotations"`
+	ID               string                 `json:"id"`
+	IncidentId       string                 `json:"incidentId"`
+	Inputs           map[string]Input       `json:"inputs"`
+	LinkedTeams      []string               `json:"linkedTeams"`
+	Severity         string                 `json:"severity"`
+	Timestamp        int64                  `json:"timestamp"`
+}
+
+type Input struct {
+	Key   map[string]string `json:"key,omitempty"`
+	Value string            `json:"value"`
 }
