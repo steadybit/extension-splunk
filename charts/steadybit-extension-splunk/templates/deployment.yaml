@@ -55,9 +55,9 @@ spec:
               memory: {{ .Values.resources.limits.memory }}
               cpu: {{ .Values.resources.limits.cpu }}
           env:
-            {{- if .Values.discovery.attributes.excludes.robot }}
-            - name: STEADYBIT_EXTENSION_DISCOVERY_ATTRIBUTES_EXCLUDES_ROBOT
-              value: {{ join "," .Values.discovery.attributes.excludes.robot | quote }}
+            {{- if .Values.discovery.attributes.excludes.detector }}
+            - name: STEADYBIT_EXTENSION_DISCOVERY_ATTRIBUTES_EXCLUDES_DETECTOR
+              value: {{ join "," .Values.discovery.attributes.excludes.detector | quote }}
             {{- end }}
             - name: STEADYBIT_EXTENSION_ACCESS_TOKEN
               valueFrom:

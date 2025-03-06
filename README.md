@@ -7,10 +7,11 @@ a [pull request](https://github.com/steadybit/reliability-hub-db) and add a link
 
 ## Configuration
 
-| Environment Variable                                      | Helm value                           | Meaning                                                                                                               | Required | Default                 |
-|-----------------------------------------------------------|--------------------------------------|-----------------------------------------------------------------------------------------------------------------------|----------|-------------------------|
-| `STEADYBIT_EXTENSION_ROBOT_NAMES`                         |                                      | Comma-separated list of discoverable robots                                                                           | yes      | Bender,Terminator,R2-D2 |
-| `STEADYBIT_EXTENSION_DISCOVERY_ATTRIBUTES_EXCLUDES_ROBOT` | `discovery.attributes.excludes.robot | List of Robot Attributes which will be excluded during discovery. Checked by key equality and supporting trailing "*" | no       |                         |
+| Environment Variable                                         | Helm value                               | Meaning                                                                                                                  | Required | Default |
+|--------------------------------------------------------------|------------------------------------------|--------------------------------------------------------------------------------------------------------------------------|----------|---------|
+| `STEADYBIT_EXTENSION_ACCESS_TOKEN`                           | `splunk.accessToken`                     | The access token needed to access your splunk observability cloud api.                                                   | Yes      |         |
+| `STEADYBIT_EXTENSION_API_BASE_URL`                           | `splunk.apiBaseUrl`                      | The api url for Splunk Observability Cloud, for example `https://app.{realm}.signalfx.com/`                              | Yes      |         |
+| `STEADYBIT_EXTENSION_DISCOVERY_ATTRIBUTES_EXCLUDES_DETECTOR` | `discovery.attributes.excludes.detector` | List of Detector Attributes which will be excluded during discovery. Checked by key equality and supporting trailing "*" | No       |         |
 
 The extension supports all environment variables provided by [steadybit/extension-kit](https://github.com/steadybit/extension-kit#environment-variables).
 

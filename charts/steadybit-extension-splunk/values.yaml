@@ -136,5 +136,5 @@ extraEnvFrom: []
 discovery:
   attributes:
     excludes:
-      # discovery.attributes.excludes.robot -- List of attributes to exclude from Robot discovery.
-      robot: []
+      # discovery.attributes.excludes.detector -- List of attributes to exclude from Detector discovery.
+      detector: []
