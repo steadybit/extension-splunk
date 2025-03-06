@@ -1,7 +1,7 @@
 splunk:
   # splunk.accessToken -- The Access Token used to access the Splunk Observability Cloud API.
   accessToken: ""
-  # splunk.apiBaseUrl -- The base url for Grafana API Calls, for example `https://app.{realm}.signalfx.com/`
+  # splunk.apiBaseUrl -- The api url for Splunk Observability Cloud, for example `https://app.{realm}.signalfx.com/`
   apiBaseUrl: ""
   # splunk.existingSecret -- If defined, will skip secret creation and instead assume that the referenced secret contains the keys api-base-url, and access-token.
   existingSecret: null

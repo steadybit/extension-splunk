@@ -1,6 +1,6 @@
 apiVersion: v2
 name: steadybit-extension-splunk
-description: Steadybit scaffold extension Helm chart for Kubernetes.
+description: Steadybit splunk extension Helm chart for Kubernetes.
 version: 1.0.0 # replace with your version
 appVersion: 0.0.1 # replace with your version
 home: https://www.steadybit.com/
