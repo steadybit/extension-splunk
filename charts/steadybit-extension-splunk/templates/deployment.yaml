@@ -59,6 +59,16 @@ spec:
             - name: STEADYBIT_EXTENSION_DISCOVERY_ATTRIBUTES_EXCLUDES_ROBOT
               value: {{ join "," .Values.discovery.attributes.excludes.robot | quote }}
             {{- end }}
+            - name: STEADYBIT_EXTENSION_ACCESS_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "splunk.secret.name" . }}
+                  key: access-token
+            - name: STEADYBIT_EXTENSION_API_BASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "splunk.secret.name" . }}
+                  key: api-base-url
             {{- include "extensionlib.deployment.env" (list .) | nindent 12 }}
             {{- with .Values.extraEnv }}
               {{- toYaml . | nindent 12 }}

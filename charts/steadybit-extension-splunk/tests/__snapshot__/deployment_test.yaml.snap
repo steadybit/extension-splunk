@@ -28,6 +28,16 @@ manifest should match snapshot using podAnnotations and Labels:
         spec:
           containers:
             - env:
+                - name: STEADYBIT_EXTENSION_ACCESS_TOKEN
+                  valueFrom:
+                    secretKeyRef:
+                      key: access-token
+                      name: steadybit-extension-splunk
+                - name: STEADYBIT_EXTENSION_API_BASE_URL
+                  valueFrom:
+                    secretKeyRef:
+                      key: api-base-url
+                      name: steadybit-extension-splunk
                 - name: STEADYBIT_LOG_LEVEL
                   value: INFO
                 - name: STEADYBIT_LOG_FORMAT
@@ -101,6 +111,16 @@ manifest should match snapshot with TLS:
         spec:
           containers:
             - env:
+                - name: STEADYBIT_EXTENSION_ACCESS_TOKEN
+                  valueFrom:
+                    secretKeyRef:
+                      key: access-token
+                      name: steadybit-extension-splunk
+                - name: STEADYBIT_EXTENSION_API_BASE_URL
+                  valueFrom:
+                    secretKeyRef:
+                      key: api-base-url
+                      name: steadybit-extension-splunk
                 - name: STEADYBIT_LOG_LEVEL
                   value: INFO
                 - name: STEADYBIT_LOG_FORMAT
@@ -185,6 +205,16 @@ manifest should match snapshot with extra env vars:
         spec:
           containers:
             - env:
+                - name: STEADYBIT_EXTENSION_ACCESS_TOKEN
+                  valueFrom:
+                    secretKeyRef:
+                      key: access-token
+                      name: steadybit-extension-splunk
+                - name: STEADYBIT_EXTENSION_API_BASE_URL
+                  valueFrom:
+                    secretKeyRef:
+                      key: api-base-url
+                      name: steadybit-extension-splunk
                 - name: STEADYBIT_LOG_LEVEL
                   value: INFO
                 - name: STEADYBIT_LOG_FORMAT
@@ -267,6 +297,16 @@ manifest should match snapshot with extra labels:
         spec:
           containers:
             - env:
+                - name: STEADYBIT_EXTENSION_ACCESS_TOKEN
+                  valueFrom:
+                    secretKeyRef:
+                      key: access-token
+                      name: steadybit-extension-splunk
+                - name: STEADYBIT_EXTENSION_API_BASE_URL
+                  valueFrom:
+                    secretKeyRef:
+                      key: api-base-url
+                      name: steadybit-extension-splunk
                 - name: STEADYBIT_LOG_LEVEL
                   value: INFO
                 - name: STEADYBIT_LOG_FORMAT
@@ -340,6 +380,16 @@ manifest should match snapshot with mutual TLS:
         spec:
           containers:
             - env:
+                - name: STEADYBIT_EXTENSION_ACCESS_TOKEN
+                  valueFrom:
+                    secretKeyRef:
+                      key: access-token
+                      name: steadybit-extension-splunk
+                - name: STEADYBIT_EXTENSION_API_BASE_URL
+                  valueFrom:
+                    secretKeyRef:
+                      key: api-base-url
+                      name: steadybit-extension-splunk
                 - name: STEADYBIT_LOG_LEVEL
                   value: INFO
                 - name: STEADYBIT_LOG_FORMAT
@@ -433,6 +483,16 @@ manifest should match snapshot with mutual TLS using containerPaths:
         spec:
           containers:
             - env:
+                - name: STEADYBIT_EXTENSION_ACCESS_TOKEN
+                  valueFrom:
+                    secretKeyRef:
+                      key: access-token
+                      name: steadybit-extension-splunk
+                - name: STEADYBIT_EXTENSION_API_BASE_URL
+                  valueFrom:
+                    secretKeyRef:
+                      key: api-base-url
+                      name: steadybit-extension-splunk
                 - name: STEADYBIT_LOG_LEVEL
                   value: INFO
                 - name: STEADYBIT_LOG_FORMAT
@@ -512,6 +572,16 @@ manifest should match snapshot with podSecurityContext:
         spec:
           containers:
             - env:
+                - name: STEADYBIT_EXTENSION_ACCESS_TOKEN
+                  valueFrom:
+                    secretKeyRef:
+                      key: access-token
+                      name: steadybit-extension-splunk
+                - name: STEADYBIT_EXTENSION_API_BASE_URL
+                  valueFrom:
+                    secretKeyRef:
+                      key: api-base-url
+                      name: steadybit-extension-splunk
                 - name: STEADYBIT_LOG_LEVEL
                   value: INFO
                 - name: STEADYBIT_LOG_FORMAT
@@ -586,6 +656,16 @@ manifest should match snapshot with priority class:
         spec:
           containers:
             - env:
+                - name: STEADYBIT_EXTENSION_ACCESS_TOKEN
+                  valueFrom:
+                    secretKeyRef:
+                      key: access-token
+                      name: steadybit-extension-splunk
+                - name: STEADYBIT_EXTENSION_API_BASE_URL
+                  valueFrom:
+                    secretKeyRef:
+                      key: api-base-url
+                      name: steadybit-extension-splunk
                 - name: STEADYBIT_LOG_LEVEL
                   value: INFO
                 - name: STEADYBIT_LOG_FORMAT
@@ -660,6 +740,16 @@ manifest should match snapshot without TLS:
         spec:
           containers:
             - env:
+                - name: STEADYBIT_EXTENSION_ACCESS_TOKEN
+                  valueFrom:
+                    secretKeyRef:
+                      key: access-token
+                      name: steadybit-extension-splunk
+                - name: STEADYBIT_EXTENSION_API_BASE_URL
+                  valueFrom:
+                    secretKeyRef:
+                      key: api-base-url
+                      name: steadybit-extension-splunk
                 - name: STEADYBIT_LOG_LEVEL
                   value: INFO
                 - name: STEADYBIT_LOG_FORMAT

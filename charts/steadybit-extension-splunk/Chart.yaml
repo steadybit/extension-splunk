@@ -6,8 +6,8 @@ appVersion: 0.0.1 # replace with your version
 home: https://www.steadybit.com/
 icon: https://steadybit-website-assets.s3.amazonaws.com/logo-symbol-transparent.png
 maintainers:
-  - email: daniel.reuter@steadybit.com
-    name: reuda
+  - email: antoine@steadybit.com
+    name: achoimet
 sources:
   - https://github.com/steadybit/extension-splunk
 annotations:
