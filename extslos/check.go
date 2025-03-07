@@ -102,15 +102,15 @@ func (m *SloStateCheckAction) Describe() action_kit_api.ActionDescription {
 				Type:        action_kit_api.ActionParameterTypeString,
 				Options: extutil.Ptr([]action_kit_api.ParameterOption{
 					action_kit_api.ExplicitParameterOption{
-						Label: "breachAlertsTriggered",
+						Label: "Breach",
 						Value: breachAlertsTriggered,
 					},
 					action_kit_api.ExplicitParameterOption{
-						Label: "Manually resolved",
+						Label: "Burn Rate",
 						Value: burnRateAlertsTriggered,
 					},
 					action_kit_api.ExplicitParameterOption{
-						Label: "errorBudgetLeftAlertsTriggered",
+						Label: "Error Budget Left",
 						Value: errorBudgetLeftAlertsTriggered,
 					},
 				}),

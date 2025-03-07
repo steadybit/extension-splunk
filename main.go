@@ -22,9 +22,15 @@ import (
 	"github.com/steadybit/extension-kit/extsignals"
 	"github.com/steadybit/extension-splunk/config"
 	"github.com/steadybit/extension-splunk/extdetectors"
+	"github.com/steadybit/extension-splunk/extevents"
 	"github.com/steadybit/extension-splunk/extslos"
 	_ "go.uber.org/automaxprocs" // Importing automaxprocs automatically adjusts GOMAXPROCS.
 	"strings"
+)
+
+const (
+	contentType         = "Content-Type"
+	applciationJsonType = "application/json"
 )
 
 func main() {
@@ -44,6 +50,7 @@ func main() {
 
 	discovery_kit_sdk.Register(extdetectors.NewDetectorDiscovery())
 	action_kit_sdk.RegisterAction(extdetectors.NewDetectorStateCheckAction())
+	extevents.RegisterEventListenerHandlers()
 
 	discovery_kit_sdk.Register(extslos.NewSLODiscovery())
 	action_kit_sdk.RegisterAction(extslos.NewSloStateCheckAction())
@@ -72,17 +79,46 @@ func initRestyClient() {
 	extdetectors.RestyClient = resty.New()
 	extdetectors.RestyClient.SetBaseURL(strings.TrimRight(config.Config.ApiBaseUrl, "/"))
 	extdetectors.RestyClient.SetHeader("Authorization", "Bearer "+config.Config.AccessToken)
-	extdetectors.RestyClient.SetHeader("Content-Type", "application/json")
+	extdetectors.RestyClient.SetHeader(contentType, applciationJsonType)
 
 	extslos.RestyClient = resty.New()
 	extslos.RestyClient.SetBaseURL(strings.TrimRight(config.Config.ApiBaseUrl, "/"))
 	extslos.RestyClient.SetHeader("Authorization", "Bearer "+config.Config.AccessToken)
-	extslos.RestyClient.SetHeader("Content-Type", "application/json")
+	extslos.RestyClient.SetHeader(contentType, applciationJsonType)
+
+	extevents.RestyClient = resty.New()
+	extevents.RestyClient.SetBaseURL(strings.TrimRight(config.Config.IngestBaseUrl, "/"))
+	extevents.RestyClient.SetHeader("X-SF-Token", config.Config.AccessToken)
+	extevents.RestyClient.SetHeader(contentType, applciationJsonType)
 }
 
 func getExtensionList() ExtensionListResponse {
 	return ExtensionListResponse{
 		ActionList:    action_kit_sdk.GetActionList(),
 		DiscoveryList: discovery_kit_sdk.GetDiscoveryList(),
+		EventListenerList: event_kit_api.EventListenerList{
+			EventListeners: []event_kit_api.EventListener{
+				{
+					Method:   "POST",
+					Path:     "/events/experiment-started",
+					ListenTo: []string{"experiment.execution.created"},
+				},
+				{
+					Method:   "POST",
+					Path:     "/events/experiment-completed",
+					ListenTo: []string{"experiment.execution.completed", "experiment.execution.failed", "experiment.execution.canceled", "experiment.execution.errored"},
+				},
+				{
+					Method:   "POST",
+					Path:     "/events/experiment-step-started",
+					ListenTo: []string{"experiment.execution.step-started"},
+				},
+				{
+					Method:   "POST",
+					Path:     "/events/experiment-step-completed",
+					ListenTo: []string{"experiment.execution.step-completed", "experiment.execution.step-canceled", "experiment.execution.step-errored", "experiment.execution.step-failed"},
+				},
+			},
+		},
 	}
 }

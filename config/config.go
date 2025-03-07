@@ -15,6 +15,7 @@ import (
 type Specification struct {
 	AccessToken                         string   `json:"accessToken" split_words:"true" required:"true"`
 	ApiBaseUrl                          string   `json:"apiBaseUrl" split_words:"true" required:"true"`
+	IngestBaseUrl                       string   `json:"ingestBaseUrl" split_words:"true" required:"true"`
 	DiscoveryAttributesExcludesDetector []string `json:"discoveryAttributesExcludesDetector" split_words:"true" required:"false"`
 	DiscoveryAttributesExcludesSLO      []string `json:"discoveryAttributesExcludesSLO" split_words:"true" required:"false"`
 }

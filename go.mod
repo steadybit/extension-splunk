@@ -6,6 +6,7 @@ toolchain go1.23.2
 
 require (
 	github.com/KimMachineGun/automemlimit v0.7.1
+	github.com/aquilax/truncate v1.0.1
 	github.com/go-resty/resty/v2 v2.16.5
 	github.com/kelseyhightower/envconfig v1.4.0
 	github.com/rs/zerolog v1.33.0
