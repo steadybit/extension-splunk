@@ -7,7 +7,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/aquilax/truncate"
 	"github.com/go-resty/resty/v2"
 	"github.com/rs/zerolog/log"
 	"github.com/steadybit/event-kit/go/event_kit_api"
@@ -83,10 +82,10 @@ func onExperimentStep(event event_kit_api.EventRequestBody) (*Event, error) {
 func getEventBaseTags(event event_kit_api.EventRequestBody) map[string]string {
 	tags := make(map[string]string)
 	tags["source"] = "Steadybit"
-	tags["env"] = truncate.Truncate(event.Environment.Name, 20, "...", truncate.PositionEnd)
-	tags["event"] = truncate.Truncate(event.EventName, 50, "...", truncate.PositionEnd)
+	tags["env"] = event.Environment.Name
+	tags["event"] = event.EventName
 	tags["event_id"] = event.Id.String()
-	tags["tenant"] = truncate.Truncate(event.Tenant.Name, 10, "...", truncate.PositionEnd)
+	tags["tenant"] = event.Tenant.Name
 	tags["tenant_key"] = event.Tenant.Key
 
 	if event.Team != nil {
@@ -104,7 +103,7 @@ func getExecutionTags(event event_kit_api.EventRequestBody) map[string]string {
 	}
 	tags["exec_id"] = fmt.Sprintf("%g", event.ExperimentExecution.ExecutionId)
 	tags["exp_key"] = event.ExperimentExecution.ExperimentKey
-	tags["exp_name"] = truncate.Truncate(event.ExperimentExecution.Name, 20, "...", truncate.PositionEnd)
+	tags["exp_name"] = event.ExperimentExecution.Name
 
 	if event.ExperimentExecution.StartedTime.IsZero() {
 		tags["started_time"] = time.Now().Format(time.RFC3339)
@@ -126,12 +125,12 @@ func getStepTags(step event_kit_api.ExperimentStepExecution) map[string]string {
 		tags["step_action_id"] = *step.ActionId
 	}
 	if step.ActionName != nil {
-		tags["step_name"] = truncate.Truncate(*step.ActionName, 20, "...", truncate.PositionEnd)
+		tags["step_name"] = *step.ActionName
 	}
 	if step.CustomLabel != nil {
-		tags["step_label"] = truncate.Truncate(*step.CustomLabel, 20, "...", truncate.PositionEnd)
+		tags["step_label"] = *step.CustomLabel
 	}
-	tags["step_exec_id"] = fmt.Sprintf("step_exec_id:%.0f", step.ExecutionId)
+	tags["step_exec_id"] = fmt.Sprintf("%.0f", step.ExecutionId)
 	tags["step_exp_key"] = step.ExperimentKey
 	tags["step_id"] = step.Id.String()
 
