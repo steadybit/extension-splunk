@@ -5,7 +5,7 @@ splunk:
   apiBaseUrl: ""
   # splunk.ingestBaseUrl -- The ingest url for Splunk Observability Cloud, for example `https://ingest.{realm}.signalfx.com/`
   ingestBaseUrl: ""
-  # splunk.existingSecret -- If defined, will skip secret creation and instead assume that the referenced secret contains the keys api-base-url, and access-token.
+  # splunk.existingSecret -- If defined, will skip secret creation and instead assume that the referenced secret contains the keys api-base-url, ingest-api-url, and access-token.
   existingSecret: null
 
 image:

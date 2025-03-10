@@ -293,7 +293,7 @@ func DetectorCheckStatus(ctx context.Context, state *DetectorCheckState, client 
 
 	var metrics []action_kit_api.Metric
 	for _, incident := range incidents {
-		metrics = append(metrics, *toMetric(state.DetectorId, incident, now))
+		metrics = append(metrics, *toMetric(state.DetectorId, state.DetectorName, incident, now))
 	}
 
 	return &action_kit_api.StatusResult{
@@ -303,7 +303,7 @@ func DetectorCheckStatus(ctx context.Context, state *DetectorCheckState, client 
 	}, nil
 }
 
-func toMetric(detectorID string, incident Incident, now time.Time) *action_kit_api.Metric {
+func toMetric(detectorID string, detectorName string, incident Incident, now time.Time) *action_kit_api.Metric {
 	var tooltip string
 	var state string
 	var url string
@@ -326,8 +326,8 @@ func toMetric(detectorID string, incident Incident, now time.Time) *action_kit_a
 	return extutil.Ptr(action_kit_api.Metric{
 		Name: extutil.Ptr("splunk_detector_incident_state"),
 		Metric: map[string]string{
-			"splunk.metric.id":    detectorID + "-" + incident.IncidentId,
-			"splunk.metric.label": incident.DisplayBody,
+			"splunk.metric.id":    detectorID,
+			"splunk.metric.label": detectorName,
 			"state":               state,
 			"tooltip":             tooltip,
 			"url":                 url,
