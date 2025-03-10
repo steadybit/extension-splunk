@@ -69,6 +69,11 @@ spec:
                 secretKeyRef:
                   name: {{ include "splunk.secret.name" . }}
                   key: api-base-url
+            - name: STEADYBIT_EXTENSION_INGEST_BASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "splunk.secret.name" . }}
+                  key: ingest-base-url
             {{- include "extensionlib.deployment.env" (list .) | nindent 12 }}
             {{- with .Values.extraEnv }}
               {{- toYaml . | nindent 12 }}

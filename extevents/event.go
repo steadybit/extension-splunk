@@ -137,6 +137,73 @@ func getStepTags(step event_kit_api.ExperimentStepExecution) map[string]string {
 	return tags
 }
 
+//func getTargetTags(target event_kit_api.ExperimentStepTargetExecution) []string {
+//	tags := []string{
+//		"execution_id:" + fmt.Sprintf("%g", target.ExecutionId),
+//		"experiment_key:" + target.ExperimentKey,
+//		"execution_state:" + string(target.State),
+//	}
+//
+//	if target.StartedTime != nil {
+//		tags = append(tags, "started_time:"+target.StartedTime.Format(time.RFC3339))
+//	}
+//
+//	if target.EndedTime != nil {
+//		tags = append(tags, "ended_time:"+target.EndedTime.Format(time.RFC3339))
+//	}
+//
+//	if _, ok := target.TargetAttributes["k8s.cluster-name"]; ok {
+//		//"kube_"-tags
+//		tags = append(tags, translateToDatadog(target, "k8s.cluster-name", "kube_cluster_name")...)
+//		tags = append(tags, translateToDatadog(target, "k8s.namespace", "kube_namespace")...)
+//		tags = append(tags, translateToDatadog(target, "k8s.deployment", "kube_deployment")...)
+//		tags = append(tags, translateToDatadog(target, "k8s.namespace", "namespace")...)
+//		tags = append(tags, translateToDatadog(target, "k8s.pod.name", "pod_name")...)
+//		tags = append(tags, translateToDatadog(target, "k8s.deployment", "deployment")...)
+//		tags = append(tags, translateToDatadog(target, "k8s.container.name", "container_name")...)
+//		tags = append(tags, translateToDatadog(target, "k8s.cluster-name", "cluster_name")...)
+//		tags = append(tags, translateToDatadog(target, "k8s.pod.label.tags.datadoghq.com/service", "service")...)
+//		tags = append(tags, translateToDatadog(target, "k8s.deployment.label.tags.datadoghq.com/service", "service")...)
+//	}
+//
+//	tags = append(tags, getHostnameTag(target)...)
+//	tags = append(tags, translateToDatadog(target, "container.id.stripped", "container_id")...)
+//
+//	//AWS tags
+//	tags = append(tags, translateToDatadog(target, "aws.region", "aws_region")...)
+//	tags = append(tags, translateToDatadog(target, "aws.zone", "aws_zone")...)
+//	tags = append(tags, translateToDatadog(target, "aws.account", "aws_account")...)
+//
+//	return removeDuplicates(tags)
+//}
+//
+//func getHostnameTag(target event_kit_api.ExperimentStepTargetExecution) []string {
+//	var tags []string
+//	tags = append(tags, translateToDatadog(target, "container.host", "host")...)
+//	tags = append(tags, translateToDatadog(target, "host.hostname", "host")...)
+//	tags = append(tags, translateToDatadog(target, "application.hostname", "host")...)
+//	tags = removeDuplicates(tags)
+//
+//	//Add cluster-name to host -> https://docs.datadoghq.com/containers/guide/kubernetes-cluster-name-detection/
+//	if values, ok := target.TargetAttributes["k8s.cluster-name"]; ok {
+//		if len(tags) == 1 && len(values) == 1 {
+//			tags[0] = tags[0] + "-" + values[0]
+//		}
+//	}
+//	return tags
+//}
+//
+//func translateToDatadog(target event_kit_api.ExperimentStepTargetExecution, steadybitAttribute string, datadogTag string) []string {
+//	var tags []string
+//	if values, ok := target.TargetAttributes[steadybitAttribute]; ok {
+//		//We don't want to add one-to-many attributes to datadog. For example when attacking a host, we don't want to add all namespaces or pods which are running on that host.
+//		if (len(values)) == 1 {
+//			tags = append(tags, datadogTag+":"+values[0])
+//		}
+//	}
+//	return tags
+//}
+
 func parseBodyToEventRequestBody(body []byte) (event_kit_api.EventRequestBody, error) {
 	var event event_kit_api.EventRequestBody
 	err := json.Unmarshal(body, &event)
