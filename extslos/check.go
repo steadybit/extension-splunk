@@ -32,6 +32,7 @@ var (
 )
 
 const (
+	noAlerts                       = "no alerts"
 	breachAlertsTriggered          = "breach"
 	burnRateAlertsTriggered        = "burn rate"
 	errorBudgetLeftAlertsTriggered = "error budget"
@@ -102,15 +103,19 @@ func (m *SloStateCheckAction) Describe() action_kit_api.ActionDescription {
 				Type:        action_kit_api.ActionParameterTypeString,
 				Options: extutil.Ptr([]action_kit_api.ParameterOption{
 					action_kit_api.ExplicitParameterOption{
-						Label: "Breach",
+						Label: "No Alert",
+						Value: noAlerts,
+					},
+					action_kit_api.ExplicitParameterOption{
+						Label: "Breach Alert",
 						Value: breachAlertsTriggered,
 					},
 					action_kit_api.ExplicitParameterOption{
-						Label: "Burn Rate",
+						Label: "Burn Rate Alert",
 						Value: burnRateAlertsTriggered,
 					},
 					action_kit_api.ExplicitParameterOption{
-						Label: "Error Budget Left",
+						Label: "Error Budget Left Alert",
 						Value: errorBudgetLeftAlertsTriggered,
 					},
 				}),
@@ -215,12 +220,23 @@ func SLOCheckStatus(ctx context.Context, state *SloCheckState, client *resty.Cli
 	burnRateAlertsTriggered := strings.Contains(state.ExpectedState, burnRateAlertsTriggered)
 	errorBudgetLeftAlertsTriggered := strings.Contains(state.ExpectedState, errorBudgetLeftAlertsTriggered)
 
-	jsonData, err := json.Marshal(SLOSearchConfig{
-		BreachAlertsTriggered:          breachAlertsTriggered,
-		BurnRateAlertsTriggered:        burnRateAlertsTriggered,
-		ErrorBudgetLeftAlertsTriggered: errorBudgetLeftAlertsTriggered,
-		SLOIds:                         []string{state.SloID},
-	})
+	var jsonData []byte
+	var err error
+	if state.ExpectedState == noAlerts {
+		jsonData, err = json.Marshal(SLOSearchConfig{
+			BreachAlertsTriggered:          false,
+			BurnRateAlertsTriggered:        false,
+			ErrorBudgetLeftAlertsTriggered: false,
+			SLOIds:                         []string{state.SloID},
+		})
+	} else {
+		jsonData, err = json.Marshal(SLOSearchConfig{
+			BreachAlertsTriggered:          breachAlertsTriggered,
+			BurnRateAlertsTriggered:        burnRateAlertsTriggered,
+			ErrorBudgetLeftAlertsTriggered: errorBudgetLeftAlertsTriggered,
+			SLOIds:                         []string{state.SloID},
+		})
+	}
 	if err != nil {
 		return nil, extension_kit.ToError("SLOCheckStatus, marshal error", err)
 	}
@@ -254,9 +270,16 @@ func SLOCheckStatus(ctx context.Context, state *SloCheckState, client *resty.Cli
 	var checkError *action_kit_api.ActionKitError
 
 	if state.StateCheckMode == stateCheckModeAllTheTime {
-		if slosFound.Count == 0 {
+		if state.ExpectedState != noAlerts && slosFound.Count == 0 {
 			checkError = extutil.Ptr(action_kit_api.ActionKitError{
 				Title: fmt.Sprintf("The SLO '%s' has no alerts whereas '%s' is expected.",
+					state.SloName,
+					state.ExpectedState),
+				Status: extutil.Ptr(action_kit_api.Failed),
+			})
+		} else {
+			checkError = extutil.Ptr(action_kit_api.ActionKitError{
+				Title: fmt.Sprintf("The SLO '%s' has alerts whereas '%s' is expected.",
 					state.SloName,
 					state.ExpectedState),
 				Status: extutil.Ptr(action_kit_api.Failed),
