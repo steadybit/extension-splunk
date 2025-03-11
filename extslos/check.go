@@ -33,9 +33,9 @@ var (
 
 const (
 	noAlerts                       = "no alerts"
-	breachAlertsTriggered          = "breach"
-	burnRateAlertsTriggered        = "burn rate"
-	errorBudgetLeftAlertsTriggered = "error budget"
+	breachAlertsTriggered          = "breach alerts"
+	burnRateAlertsTriggered        = "burn rate alerts"
+	errorBudgetLeftAlertsTriggered = "error budget alerts"
 )
 
 type SloCheckState struct {
@@ -310,16 +310,20 @@ func toMetric(expectedState string, slo Slo, now time.Time) *action_kit_api.Metr
 	var state string
 	var url string
 
-	tooltip = fmt.Sprintf("SLO %s have active %s alert", slo.Name, expectedState)
+	tooltip = fmt.Sprintf("SLO %s with %s found", slo.Name, expectedState)
 	url = fmt.Sprintf("%s/#/alerts?query=%s", strings.TrimRight(strings.Replace(config.Config.ApiBaseUrl, "https://api", "https://app", 1), "/"), slo.ID)
 
-	state = "danger"
+	if expectedState == noAlerts {
+		state = "info"
+	} else {
+		state = "danger"
+	}
 
 	return extutil.Ptr(action_kit_api.Metric{
 		Name: extutil.Ptr("splunk_detector_incident_state"),
 		Metric: map[string]string{
 			"splunk.metric.id":    slo.ID + "-" + expectedState,
-			"splunk.metric.label": expectedState + " active alerts",
+			"splunk.metric.label": expectedState,
 			"state":               state,
 			"tooltip":             tooltip,
 			"url":                 url,
