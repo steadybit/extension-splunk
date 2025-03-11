@@ -277,7 +277,7 @@ func SLOCheckStatus(ctx context.Context, state *SloCheckState, client *resty.Cli
 					state.ExpectedState),
 				Status: extutil.Ptr(action_kit_api.Failed),
 			})
-		} else {
+		} else if state.ExpectedState == noAlerts && slosFound.Count == 1 {
 			checkError = extutil.Ptr(action_kit_api.ActionKitError{
 				Title: fmt.Sprintf("The SLO '%s' has alerts whereas '%s' is expected.",
 					state.SloName,
