@@ -270,22 +270,14 @@ func SLOCheckStatus(ctx context.Context, state *SloCheckState, client *resty.Cli
 	var checkError *action_kit_api.ActionKitError
 
 	if state.StateCheckMode == stateCheckModeAllTheTime {
-		if state.ExpectedState != noAlerts && slosFound.Count == 0 {
+		if slosFound.Count == 0 {
 			checkError = extutil.Ptr(action_kit_api.ActionKitError{
-				Title: fmt.Sprintf("The SLO '%s' has no alerts whereas '%s' is expected.",
-					state.SloName,
-					state.ExpectedState),
-				Status: extutil.Ptr(action_kit_api.Failed),
-			})
-		} else if state.ExpectedState == noAlerts && slosFound.Count == 1 {
-			checkError = extutil.Ptr(action_kit_api.ActionKitError{
-				Title: fmt.Sprintf("The SLO '%s' has alerts whereas '%s' is expected.",
+				Title: fmt.Sprintf("The SLO '%s' was not found with the expected state '%s'.",
 					state.SloName,
 					state.ExpectedState),
 				Status: extutil.Ptr(action_kit_api.Failed),
 			})
 		}
-
 	} else if state.StateCheckMode == stateCheckModeAtLeastOnce {
 		if slosFound.Count > 0 {
 			state.StateCheckSuccess = true
