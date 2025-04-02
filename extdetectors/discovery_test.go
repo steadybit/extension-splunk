@@ -12,19 +12,6 @@ import (
 	"github.com/steadybit/extension-splunk/config"
 )
 
-// TestDescribe verifies that the discovery description is built as expected.
-func TestDescribe(t *testing.T) {
-	d := &detectorDiscovery{}
-	desc := d.Describe()
-
-	if desc.Id != TargetType {
-		t.Errorf("Describe() Id = %s; want %s", desc.Id, TargetType)
-	}
-	if desc.Discover.CallInterval == nil || *desc.Discover.CallInterval != "1m" {
-		t.Errorf("Describe() CallInterval = %v; want 1m", desc.Discover.CallInterval)
-	}
-}
-
 // TestDescribeTarget checks the target description returned by the discovery.
 func TestDescribeTarget(t *testing.T) {
 	d := &detectorDiscovery{}

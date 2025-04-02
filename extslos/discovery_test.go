@@ -13,7 +13,7 @@ import (
 )
 
 // TestDescribe verifies that the discovery description is built as expected.
-func TestDescribe(t *testing.T) {
+func TestDescribeDiscovery(t *testing.T) {
 	d := &sloDiscovery{}
 	desc := d.Describe()
 
