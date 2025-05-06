@@ -266,7 +266,6 @@ func onExperimentTarget(event event_kit_api.EventRequestBody) (*Event, error) {
 	if stepExecution.ActionKind != nil && *stepExecution.ActionKind == event_kit_api.Attack {
 		tags := getEventBaseTags(event)
 		maps.Copy(tags, getExecutionTags(event))
-		maps.Copy(tags, getStepTags(*event.ExperimentStepExecution))
 		maps.Copy(tags, getTargetTags(*event.ExperimentStepTargetExecution))
 		dimensions := getTargetDimensions(*event.ExperimentStepTargetExecution)
 
