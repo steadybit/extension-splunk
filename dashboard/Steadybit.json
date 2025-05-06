@@ -1,0 +1,499 @@
+{
+  "chartExports": [
+    {
+      "chart": {
+        "autoDetectRelatedDetectorIds": [],
+        "created": 0,
+        "creator": null,
+        "customProperties": {},
+        "description": "",
+        "id": "GqQgH9RCgA8",
+        "lastUpdated": 0,
+        "lastUpdatedBy": null,
+        "name": "List of Events",
+        "options": {
+          "eventPublishLabelOptions": [
+            {
+              "displayName": "Steadybit_Event",
+              "label": "A",
+              "paletteIndex": null
+            }
+          ],
+          "noDataOptions": null,
+          "time": {
+            "range": 900000,
+            "rangeEnd": 0,
+            "type": "relative"
+          },
+          "type": "Event"
+        },
+        "packageSpecifications": "",
+        "programText": "A = events(eventType='Steadybit_Event').publish(label='Steadybit Events')",
+        "relatedDetectorIds": [],
+        "tags": []
+      }
+    },
+    {
+      "chart": {
+        "autoDetectRelatedDetectorIds": [],
+        "created": 0,
+        "creator": null,
+        "customProperties": {},
+        "description": "Last 31days",
+        "id": "GqQwI-FCcAE",
+        "lastUpdated": 0,
+        "lastUpdatedBy": null,
+        "name": "Experiment Runs Total",
+        "options": {
+          "colorBy": "Dimension",
+          "colorScale": null,
+          "colorScale2": null,
+          "maximumPrecision": null,
+          "noDataOptions": {
+            "linkText": null,
+            "linkUrl": null,
+            "noDataMessage": null
+          },
+          "programOptions": {
+            "disableSampling": false,
+            "maxDelay": 0,
+            "minimumResolution": 0,
+            "timezone": null
+          },
+          "publishLabelOptions": [
+            {
+              "displayName": "Total Runs",
+              "label": "Total Runs",
+              "paletteIndex": null,
+              "plotType": null,
+              "valuePrefix": null,
+              "valueSuffix": null,
+              "valueUnit": null,
+              "yAxis": 0
+            }
+          ],
+          "refreshInterval": null,
+          "secondaryVisualization": "None",
+          "showSparkLine": false,
+          "time": {
+            "range": 900000,
+            "rangeEnd": 0,
+            "type": "relative"
+          },
+          "timestampHidden": false,
+          "type": "SingleValue",
+          "unitPrefix": "Metric"
+        },
+        "packageSpecifications": "",
+        "programText": "A = events('Steadybit_Event', filter=filter('event', 'in', 'experiment.execution.completed', 'experiment.execution.failed', 'experiment.execution.errored', 'experiment.execution.canceled')).count().sum(over=\"31d\").publish(label='Total Runs')",
+        "relatedDetectorIds": [],
+        "tags": []
+      }
+    },
+    {
+      "chart": {
+        "autoDetectRelatedDetectorIds": [],
+        "created": 0,
+        "creator": null,
+        "customProperties": {},
+        "description": "Last 31days",
+        "id": "GqQxSeVCkAA",
+        "lastUpdated": 0,
+        "lastUpdatedBy": null,
+        "name": "Experiment Runs Failed",
+        "options": {
+          "colorBy": "Dimension",
+          "colorScale": null,
+          "colorScale2": null,
+          "maximumPrecision": null,
+          "noDataOptions": {
+            "linkText": null,
+            "linkUrl": null,
+            "noDataMessage": null
+          },
+          "programOptions": {
+            "disableSampling": false,
+            "maxDelay": 0,
+            "minimumResolution": 0,
+            "timezone": null
+          },
+          "publishLabelOptions": [
+            {
+              "displayName": "Failed Runs",
+              "label": "Failed Runs",
+              "paletteIndex": null,
+              "plotType": null,
+              "valuePrefix": null,
+              "valueSuffix": null,
+              "valueUnit": null,
+              "yAxis": 0
+            }
+          ],
+          "refreshInterval": null,
+          "secondaryVisualization": "None",
+          "showSparkLine": false,
+          "time": {
+            "range": 900000,
+            "rangeEnd": 0,
+            "type": "relative"
+          },
+          "timestampHidden": false,
+          "type": "SingleValue",
+          "unitPrefix": "Metric"
+        },
+        "packageSpecifications": "",
+        "programText": "A = events('Steadybit_Event', filter=filter('event', 'in', 'experiment.execution.failed')).count().sum(over=\"31d\").publish(label='Failed Runs')",
+        "relatedDetectorIds": [],
+        "tags": []
+      }
+    },
+    {
+      "chart": {
+        "autoDetectRelatedDetectorIds": [],
+        "created": 0,
+        "creator": null,
+        "customProperties": {},
+        "description": "Last 31days",
+        "id": "GqQya8rCkAI",
+        "lastUpdated": 0,
+        "lastUpdatedBy": null,
+        "name": "Experiment Runs Completed",
+        "options": {
+          "colorBy": "Dimension",
+          "colorScale": null,
+          "colorScale2": null,
+          "maximumPrecision": null,
+          "noDataOptions": {
+            "linkText": null,
+            "linkUrl": null,
+            "noDataMessage": null
+          },
+          "programOptions": {
+            "disableSampling": false,
+            "maxDelay": 0,
+            "minimumResolution": 0,
+            "timezone": null
+          },
+          "publishLabelOptions": [
+            {
+              "displayName": "Completed Runs",
+              "label": "Completed Runs",
+              "paletteIndex": null,
+              "plotType": null,
+              "valuePrefix": null,
+              "valueSuffix": null,
+              "valueUnit": null,
+              "yAxis": 0
+            }
+          ],
+          "refreshInterval": null,
+          "secondaryVisualization": "None",
+          "showSparkLine": false,
+          "time": {
+            "range": 900000,
+            "rangeEnd": 0,
+            "type": "relative"
+          },
+          "timestampHidden": false,
+          "type": "SingleValue",
+          "unitPrefix": "Metric"
+        },
+        "packageSpecifications": "",
+        "programText": "A = events('Steadybit_Event', filter=filter('event', 'in', 'experiment.execution.completed')).count().sum(over=\"31d\").publish(label='Completed Runs')",
+        "relatedDetectorIds": [],
+        "tags": []
+      }
+    },
+    {
+      "chart": {
+        "autoDetectRelatedDetectorIds": [],
+        "created": 0,
+        "creator": null,
+        "customProperties": {},
+        "description": "Last 31days",
+        "id": "GqQya8rCkAM",
+        "lastUpdated": 0,
+        "lastUpdatedBy": null,
+        "name": "Experiment Runs Errored",
+        "options": {
+          "colorBy": "Dimension",
+          "colorScale": null,
+          "colorScale2": null,
+          "maximumPrecision": null,
+          "noDataOptions": {
+            "linkText": null,
+            "linkUrl": null,
+            "noDataMessage": null
+          },
+          "programOptions": {
+            "disableSampling": false,
+            "maxDelay": 0,
+            "minimumResolution": 0,
+            "timezone": null
+          },
+          "publishLabelOptions": [
+            {
+              "displayName": "Errored Runs",
+              "label": "Errored Runs",
+              "paletteIndex": null,
+              "plotType": null,
+              "valuePrefix": null,
+              "valueSuffix": null,
+              "valueUnit": null,
+              "yAxis": 0
+            }
+          ],
+          "refreshInterval": null,
+          "secondaryVisualization": "None",
+          "showSparkLine": false,
+          "time": {
+            "range": 900000,
+            "rangeEnd": 0,
+            "type": "relative"
+          },
+          "timestampHidden": false,
+          "type": "SingleValue",
+          "unitPrefix": "Metric"
+        },
+        "packageSpecifications": "",
+        "programText": "B = events('Steadybit_Event', filter=filter('event', 'in', 'experiment.execution.errored')).count().sum(over=\"31d\").publish(label='Errored Runs')",
+        "relatedDetectorIds": [],
+        "tags": []
+      }
+    },
+    {
+      "chart": {
+        "autoDetectRelatedDetectorIds": [],
+        "created": 0,
+        "creator": null,
+        "customProperties": {},
+        "description": "",
+        "id": "GqQ13XlCgAY",
+        "lastUpdated": 0,
+        "lastUpdatedBy": null,
+        "name": "Experiments by Result",
+        "options": {
+          "areaChartOptions": {
+            "showDataMarkers": false
+          },
+          "axes": [
+            {
+              "highWatermark": null,
+              "highWatermarkLabel": null,
+              "label": "",
+              "lowWatermark": null,
+              "lowWatermarkLabel": null,
+              "max": null,
+              "min": null
+            },
+            {
+              "highWatermark": null,
+              "highWatermarkLabel": null,
+              "label": "",
+              "lowWatermark": null,
+              "lowWatermarkLabel": null,
+              "max": null,
+              "min": null
+            }
+          ],
+          "axisPrecision": null,
+          "colorBy": "Dimension",
+          "defaultPlotType": "ColumnChart",
+          "eventPublishLabelOptions": [],
+          "histogramChartOptions": {
+            "colorThemeIndex": 16
+          },
+          "includeZero": false,
+          "legendOptions": {
+            "fields": null
+          },
+          "lineChartOptions": {
+            "showDataMarkers": false
+          },
+          "noDataOptions": {
+            "linkText": null,
+            "linkUrl": null,
+            "noDataMessage": null
+          },
+          "onChartLegendOptions": {
+            "dimensionInLegend": "event",
+            "showLegend": true
+          },
+          "programOptions": {
+            "disableSampling": false,
+            "maxDelay": 0,
+            "minimumResolution": 0,
+            "timezone": null
+          },
+          "publishLabelOptions": [
+            {
+              "displayName": "Experiments",
+              "label": "Experiments",
+              "paletteIndex": null,
+              "plotType": null,
+              "valuePrefix": null,
+              "valueSuffix": null,
+              "valueUnit": null,
+              "yAxis": 0
+            }
+          ],
+          "showEventLines": false,
+          "stacked": true,
+          "time": {
+            "range": 900000,
+            "rangeEnd": 0,
+            "type": "relative"
+          },
+          "type": "TimeSeriesChart",
+          "unitPrefix": "Metric"
+        },
+        "packageSpecifications": "",
+        "programText": "A = events(eventType='Steadybit_Event', filter=filter('event', 'in', 'experiment.execution.failed', 'experiment.execution.completed', 'experiment.execution.errored', 'experiment.execution.canceled')).count(by=['event']).publish(label='Experiment Runs')",
+        "relatedDetectorIds": [],
+        "tags": []
+      }
+    },
+    {
+      "chart": {
+        "autoDetectRelatedDetectorIds": [],
+        "created": 0,
+        "creator": null,
+        "customProperties": {},
+        "description": "Last 31days",
+        "id": "GqQ13XlCgBA",
+        "lastUpdated": 0,
+        "lastUpdatedBy": null,
+        "name": "Experiment Runs Canceled",
+        "options": {
+          "colorBy": "Dimension",
+          "colorScale": null,
+          "colorScale2": null,
+          "maximumPrecision": null,
+          "noDataOptions": {
+            "linkText": null,
+            "linkUrl": null,
+            "noDataMessage": null
+          },
+          "programOptions": {
+            "disableSampling": false,
+            "maxDelay": 0,
+            "minimumResolution": 0,
+            "timezone": null
+          },
+          "publishLabelOptions": [
+            {
+              "displayName": "Total Runs",
+              "label": "Total Runs",
+              "paletteIndex": null,
+              "plotType": null,
+              "valuePrefix": null,
+              "valueSuffix": null,
+              "valueUnit": null,
+              "yAxis": 0
+            }
+          ],
+          "refreshInterval": null,
+          "secondaryVisualization": "None",
+          "showSparkLine": false,
+          "time": {
+            "range": 900000,
+            "rangeEnd": 0,
+            "type": "relative"
+          },
+          "timestampHidden": false,
+          "type": "SingleValue",
+          "unitPrefix": "Metric"
+        },
+        "packageSpecifications": "",
+        "programText": "A = events('Steadybit_Event', filter=filter('event', 'in', 'experiment.execution.canceled')).count().sum(over=\"31d\").publish(label='Total Runs')",
+        "relatedDetectorIds": [],
+        "tags": []
+      }
+    }
+  ],
+  "dashboardExport": {
+    "dashboard": {
+      "authorizedWriters": null,
+      "chartDensity": "DEFAULT",
+      "charts": [
+        {
+          "chartId": "GqQwI-FCcAE",
+          "column": 0,
+          "height": 1,
+          "row": 0,
+          "width": 3
+        },
+        {
+          "chartId": "GqQya8rCkAI",
+          "column": 3,
+          "height": 1,
+          "row": 0,
+          "width": 2
+        },
+        {
+          "chartId": "GqQ13XlCgBA",
+          "column": 9,
+          "height": 1,
+          "row": 0,
+          "width": 3
+        },
+        {
+          "chartId": "GqQya8rCkAM",
+          "column": 5,
+          "height": 1,
+          "row": 0,
+          "width": 2
+        },
+        {
+          "chartId": "GqQxSeVCkAA",
+          "column": 7,
+          "height": 1,
+          "row": 0,
+          "width": 2
+        },
+        {
+          "chartId": "GqQ13XlCgAY",
+          "column": 0,
+          "height": 1,
+          "row": 1,
+          "width": 12
+        },
+        {
+          "chartId": "GqQgH9RCgA8",
+          "column": 0,
+          "height": 3,
+          "row": 2,
+          "width": 12
+        }
+      ],
+      "created": 0,
+      "creator": null,
+      "customProperties": null,
+      "description": "",
+      "discoveryOptions": null,
+      "eventOverlays": null,
+      "filters": {
+        "sources": [],
+        "time": {
+          "end": "Now",
+          "start": "-31d"
+        },
+        "variables": []
+      },
+      "groupId": "GlrA658CcA0",
+      "groupName": "manuel@steadybit.com",
+      "id": "GqQiZfECcAA",
+      "lastUpdated": 0,
+      "lastUpdatedBy": null,
+      "maxDelayOverride": null,
+      "name": "Steadybit Events",
+      "permissions": null,
+      "selectedEventOverlays": [],
+      "tags": null
+    }
+  },
+  "hashCode": 542013076,
+  "id": "GqQiZfECcAA",
+  "modelVersion": 1,
+  "packageType": "DASHBOARD"
+}
