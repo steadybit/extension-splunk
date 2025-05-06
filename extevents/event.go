@@ -14,18 +14,25 @@ import (
 	"github.com/steadybit/extension-kit/exthttp"
 	"maps"
 	"net/http"
+	"sync"
 	"time"
 )
 
 func RegisterEventListenerHandlers() {
 	exthttp.RegisterHttpHandler("/events/experiment-started", handle(onExperiment))
-	exthttp.RegisterHttpHandler("/events/experiment-completed", handle(onExperiment))
+	exthttp.RegisterHttpHandler("/events/experiment-completed", handle(onExperimentCompleted))
 	exthttp.RegisterHttpHandler("/events/experiment-step-started", handle(onExperimentStep))
-	exthttp.RegisterHttpHandler("/events/experiment-step-completed", handle(onExperimentStep))
+	//exthttp.RegisterHttpHandler("/events/experiment-step-completed", handle(onExperimentStep))
+	exthttp.RegisterHttpHandler("/events/experiment-target-started", handle(onExperimentTarget))
+	exthttp.RegisterHttpHandler("/events/experiment-target-completed", handle(onExperimentTarget))
 }
 
 const (
 	category = "USER_DEFINED"
+)
+
+var (
+	stepExecutions = sync.Map{}
 )
 
 var RestyClient *resty.Client
@@ -66,10 +73,25 @@ func onExperiment(event event_kit_api.EventRequestBody) (*Event, error) {
 	}, nil
 }
 
+func onExperimentCompleted(event event_kit_api.EventRequestBody) (*Event, error) {
+	stepExecutions.Range(func(key, value interface{}) bool {
+		stepExecution := value.(event_kit_api.ExperimentStepExecution)
+		if stepExecution.ExecutionId == event.ExperimentExecution.ExecutionId {
+			log.Debug().Msgf("Delete step execution data for id %.0f", stepExecution.ExecutionId)
+			stepExecutions.Delete(key)
+		}
+		return true
+	})
+
+	return onExperiment(event)
+}
+
 func onExperimentStep(event event_kit_api.EventRequestBody) (*Event, error) {
 	tags := getEventBaseTags(event)
 	maps.Copy(tags, getExecutionTags(event))
 	maps.Copy(tags, getStepTags(*event.ExperimentStepExecution))
+
+	stepExecutions.Store(event.ExperimentStepExecution.Id, *event.ExperimentStepExecution)
 
 	return &Event{
 		Category:   category,
@@ -137,6 +159,67 @@ func getStepTags(step event_kit_api.ExperimentStepExecution) map[string]string {
 	return tags
 }
 
+func getTargetTags(target event_kit_api.ExperimentStepTargetExecution) map[string]string {
+	tags := make(map[string]string)
+
+	tags["execution_id"] = fmt.Sprintf("%.0f", target.ExecutionId)
+	tags["execution_id"] = target.ExperimentKey
+	tags["execution_state"] = string(target.State)
+
+	if target.StartedTime != nil {
+		tags["started_time"] = target.StartedTime.Format(time.RFC3339)
+	}
+
+	if target.EndedTime != nil {
+		tags["ended_time"] = target.EndedTime.Format(time.RFC3339)
+	}
+
+	return tags
+}
+
+func getTargetDimensions(target event_kit_api.ExperimentStepTargetExecution) map[string]string {
+	dimensions := make(map[string]string)
+	const clusterNameSteadybitAttribute = "k8s.cluster-name"
+
+	if _, ok := target.TargetAttributes[clusterNameSteadybitAttribute]; ok {
+		translateToSplunk(dimensions, target, clusterNameSteadybitAttribute, "k8s.cluster.name")
+		translateToSplunk(dimensions, target, "k8s.namespace", "k8s.namespace.name")
+		translateToSplunk(dimensions, target, "k8s.deployment", "k8s.deployment.name")
+		translateToSplunk(dimensions, target, "k8s.pod.name", "clustername")
+		translateToSplunk(dimensions, target, "k8s.container.name", "k8s.container.name")
+	}
+
+	getHostnameDimension(dimensions, target)
+	translateToSplunk(dimensions, target, "container.id.stripped", "container.id")
+
+	if _, ok := target.TargetAttributes["aws.region"]; ok {
+		//AWS tags
+		dimensions["cloud.provider"] = "aws"
+		translateToSplunk(dimensions, target, "aws.region", "cloud.region")
+		translateToSplunk(dimensions, target, "aws.zone", "cloud.availability_zone")
+		translateToSplunk(dimensions, target, "aws.account", "cloud.account.id")
+	}
+
+	return dimensions
+}
+
+func getHostnameDimension(dimensions map[string]string, target event_kit_api.ExperimentStepTargetExecution) {
+	const splunkHostDimensionName = "host.name"
+
+	translateToSplunk(dimensions, target, "container.host", splunkHostDimensionName)
+	translateToSplunk(dimensions, target, "container.host", splunkHostDimensionName)
+	translateToSplunk(dimensions, target, "host.hostname", splunkHostDimensionName)
+	translateToSplunk(dimensions, target, "application.hostname", splunkHostDimensionName)
+}
+
+func translateToSplunk(dimensions map[string]string, target event_kit_api.ExperimentStepTargetExecution, steadybitAttribute string, splunkDimension string) {
+	if values, ok := target.TargetAttributes[steadybitAttribute]; ok {
+		if (len(values)) == 1 {
+			dimensions[splunkDimension] = values[0]
+		}
+	}
+}
+
 func parseBodyToEventRequestBody(body []byte) (event_kit_api.EventRequestBody, error) {
 	var event event_kit_api.EventRequestBody
 	err := json.Unmarshal(body, &event)
@@ -166,4 +249,37 @@ func handlePostEvent(ctx context.Context, client *resty.Client, event *Event) {
 	if !res.IsSuccess() {
 		log.Err(err).Msgf("Splunk Ingest API responded with unexpected status code %d while posting events. Full response: %v", res.StatusCode(), res.String())
 	}
+}
+
+func onExperimentTarget(event event_kit_api.EventRequestBody) (*Event, error) {
+	if event.ExperimentStepTargetExecution == nil {
+		return nil, nil
+	}
+
+	var v, ok = stepExecutions.Load(event.ExperimentStepTargetExecution.StepExecutionId)
+	if !ok {
+		log.Warn().Msgf("Could not find step infos for step execution id %s", event.ExperimentStepTargetExecution.StepExecutionId)
+		return nil, nil
+	}
+	stepExecution := v.(event_kit_api.ExperimentStepExecution)
+
+	if stepExecution.ActionKind != nil && *stepExecution.ActionKind == event_kit_api.Attack {
+		tags := getEventBaseTags(event)
+		maps.Copy(tags, getExecutionTags(event))
+		maps.Copy(tags, getStepTags(*event.ExperimentStepExecution))
+		maps.Copy(tags, getTargetTags(*event.ExperimentStepTargetExecution))
+		dimensions := getTargetDimensions(*event.ExperimentStepTargetExecution)
+
+		stepExecutions.Store(event.ExperimentStepExecution.Id, *event.ExperimentStepExecution)
+
+		return &Event{
+			Category:   category,
+			EventType:  "Steadybit_Event",
+			Dimensions: dimensions,
+			Properties: tags,
+			Timestamp:  event.EventTime.UnixMilli(),
+		}, nil
+	}
+
+	return nil, nil
 }
