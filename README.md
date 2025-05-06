@@ -1,19 +1,31 @@
 # Steadybit extension-splunk
 
-TODO describe what your extension is doing here from a user perspective.
+A [Steadybit](https://www.steadybit.com/) extension to
+integrate [Splunk Observability Cloud](https://www.splunk.com/en_us/products/observability-cloud.html into Steadybit.
 
-TODO optionally add your extension to the [Reliability Hub](https://hub.steadybit.com/) by creating
-a [pull request](https://github.com/steadybit/reliability-hub-db) and add a link to this README.
+Learn about the capabilities of this extension in
+our [Reliability Hub](https://hub.steadybit.com/extension/com.steadybit.extension_splunk).
+
+## Prerequisites
+
+You need to have
+a [Splunk Organization ingest token](https://docs.splunk.com/observability/en/admin/authentication/authentication-tokens/org-tokens.html#admin-org-tokens).
+The token must have the following permissions:
+
+- ingest custom events
+- read from splunk observability cloud api
 
 ## Configuration
 
 | Environment Variable                                         | Helm value                               | Meaning                                                                                                                  | Required | Default |
 |--------------------------------------------------------------|------------------------------------------|--------------------------------------------------------------------------------------------------------------------------|----------|---------|
-| `STEADYBIT_EXTENSION_ACCESS_TOKEN`                           | `splunk.accessToken`                     | The access token needed to access your splunk observability cloud api.                                                   | Yes      |         |
+| `STEADYBIT_EXTENSION_ACCESS_TOKEN`                           | `splunk.accessToken`                     | The access token needed to access your splunk observability cloud api and ingest custom events.                          | Yes      |         |
 | `STEADYBIT_EXTENSION_API_BASE_URL`                           | `splunk.apiBaseUrl`                      | The api url for Splunk Observability Cloud, for example `https://app.{realm}.signalfx.com/`                              | Yes      |         |
+| `STEADYBIT_EXTENSION_INGEST_BASE_URL`                        | `splunk.ingestBaseUrl`                   | The ingest url for Splunk Observability Cloud, for example `https://ingest.{realm}.signalfx.com/`                        | Yes      |         |
 | `STEADYBIT_EXTENSION_DISCOVERY_ATTRIBUTES_EXCLUDES_DETECTOR` | `discovery.attributes.excludes.detector` | List of Detector Attributes which will be excluded during discovery. Checked by key equality and supporting trailing "*" | No       |         |
 
-The extension supports all environment variables provided by [steadybit/extension-kit](https://github.com/steadybit/extension-kit#environment-variables).
+The extension supports all environment variables provided
+by [steadybit/extension-kit](https://github.com/steadybit/extension-kit#environment-variables).
 
 ## Installation
 
@@ -34,7 +46,8 @@ You must provide additional values to activate this extension.
 ```
 
 Additional configuration options can be found in
-the [helm-chart](https://github.com/steadybit/extension-splunk/blob/main/charts/steadybit-extension-splunk/values.yaml) of the
+the [helm-chart](https://github.com/steadybit/extension-splunk/blob/main/charts/steadybit-extension-splunk/values.yaml)
+of the
 extension.
 
 #### Alternative (via own helm chart)
@@ -72,6 +85,7 @@ information about extension registration and how to verify.
 ## Version and Revision
 
 The version and revision of the extension:
+
 - are printed during the startup of the extension
 - are added as a Docker label to the image
 - are available via the `version.txt`/`revision.txt` files in the root of the image
