@@ -15,7 +15,7 @@
           "eventPublishLabelOptions": [
             {
               "displayName": "Steadybit_Event",
-              "label": "A",
+              "label": "Steadybit Events",
               "paletteIndex": null
             }
           ],
@@ -327,8 +327,8 @@
           },
           "publishLabelOptions": [
             {
-              "displayName": "Experiments",
-              "label": "Experiments",
+              "displayName": "Experiment Runs",
+              "label": "Experiment Runs",
               "paletteIndex": null,
               "plotType": null,
               "valuePrefix": null,
