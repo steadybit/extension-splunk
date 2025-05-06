@@ -269,8 +269,6 @@ func onExperimentTarget(event event_kit_api.EventRequestBody) (*Event, error) {
 		maps.Copy(tags, getTargetTags(*event.ExperimentStepTargetExecution))
 		dimensions := getTargetDimensions(*event.ExperimentStepTargetExecution)
 
-		stepExecutions.Store(event.ExperimentStepExecution.Id, *event.ExperimentStepExecution)
-
 		return &Event{
 			Category:   category,
 			EventType:  "Steadybit_Event",
