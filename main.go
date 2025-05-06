@@ -115,8 +115,13 @@ func getExtensionList() ExtensionListResponse {
 				},
 				{
 					Method:   "POST",
-					Path:     "/events/experiment-step-completed",
-					ListenTo: []string{"experiment.execution.step-completed", "experiment.execution.step-canceled", "experiment.execution.step-errored", "experiment.execution.step-failed"},
+					Path:     "/events/experiment-target-started",
+					ListenTo: []string{"experiment.execution.target-started"},
+				},
+				{
+					Method:   "POST",
+					Path:     "/events/experiment-target-completed",
+					ListenTo: []string{"experiment.execution.target-completed", "experiment.execution.target-canceled", "experiment.execution.target-errored", "experiment.execution.target-failed"},
 				},
 			},
 		},
