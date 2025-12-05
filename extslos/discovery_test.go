@@ -157,16 +157,16 @@ func TestDiscoverTargets_404Response(t *testing.T) {
 	}
 }
 
-// errorRoundTripper is used to simulate an HTTP client error.
-type errorRoundTripper struct{}
+// simulateClientErrorRoundTripper is used to simulate an HTTP client error.
+type simulateClientErrorRoundTripper struct{}
 
-func (e *errorRoundTripper) RoundTrip(req *http.Request) (*http.Response, error) {
+func (e *simulateClientErrorRoundTripper) RoundTrip(req *http.Request) (*http.Response, error) {
 	return nil, errors.New("forced error")
 }
 
 // TestDiscoverTargets_ClientError tests that an error during the HTTP call is handled gracefully.
 func TestDiscoverTargets_ClientError(t *testing.T) {
-	client := resty.New().SetTransport(&errorRoundTripper{})
+	client := resty.New().SetTransport(&simulateClientErrorRoundTripper{})
 	RestyClient = client
 
 	d := &sloDiscovery{}

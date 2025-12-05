@@ -246,7 +246,7 @@ func TestStatus_AtLeastOnce_Failure(t *testing.T) {
 
 // TestStatus_ClientError tests that a client error is handled gracefully.
 func TestStatus_ClientError(t *testing.T) {
-	client := resty.New().SetTransport(&errorRoundTripper{})
+	client := resty.New().SetTransport(&simulateClientErrorRoundTripper{})
 	RestyClient = client
 
 	state := SloCheckState{

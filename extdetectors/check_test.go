@@ -271,7 +271,7 @@ func TestStatus_AtLeastOnce_Failure(t *testing.T) {
 
 func TestStatus_ClientError(t *testing.T) {
 	// Create a resty client that always returns an error.
-	client := resty.New().SetTransport(&errorRoundTripper{})
+	client := resty.New().SetTransport(&simulateClientErrorRoundTripper{})
 	RestyClient = client
 
 	state := DetectorCheckState{
