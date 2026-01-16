@@ -62,7 +62,7 @@ func (d *detectorDiscovery) Describe() discovery_kit_api.DiscoveryDescription {
 func (d *detectorDiscovery) DescribeTarget() discovery_kit_api.TargetDescription {
 	return discovery_kit_api.TargetDescription{
 		Id:       TargetType,
-		Label:    discovery_kit_api.PluralLabel{One: "Splunk detector", Other: "Splunk detectors"},
+		Label:    discovery_kit_api.PluralLabel{One: "Splunk Detector", Other: "Splunk Detectors"},
 		Category: extutil.Ptr("monitoring"),
 		Version:  extbuild.GetSemverVersionStringOrUnknown(),
 		Icon:     extutil.Ptr(targetIcon),
