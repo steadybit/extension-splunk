@@ -9,12 +9,14 @@ package e2e
 
 import (
 	"fmt"
-	"github.com/rs/zerolog/log"
-	"github.com/steadybit/extension-kit/exthttp"
-	"github.com/steadybit/extension-splunk/extdetectors"
 	"net"
 	"net/http"
 	"net/http/httptest"
+
+	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
+	"github.com/steadybit/extension-kit/exthttp"
+	"github.com/steadybit/extension-splunk/extdetectors"
 )
 
 type mockServer struct {
