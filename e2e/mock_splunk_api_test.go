@@ -40,7 +40,7 @@ func createMockSplunkApiServer() *mockServer {
 }
 
 func handler[T any](getter func() T) http.Handler {
-	return exthttp.PanicRecovery(exthttp.LogRequest(exthttp.GetterAsHandler(getter)))
+	return exthttp.PanicRecovery(exthttp.LogRequestWithDefaultLogLevel(exthttp.GetterAsHandler(getter), zerolog.DebugLevel))
 }
 
 func (m *mockServer) getDetectors() extdetectors.Response {
