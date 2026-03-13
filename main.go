@@ -5,6 +5,9 @@
 package main
 
 import (
+	"strings"
+	"time"
+
 	_ "github.com/KimMachineGun/automemlimit" // By default, it sets `GOMEMLIMIT` to 90% of cgroup's memory limit.
 	"github.com/go-resty/resty/v2"
 	"github.com/rs/zerolog"
@@ -25,13 +28,14 @@ import (
 	"github.com/steadybit/extension-splunk/extevents"
 	"github.com/steadybit/extension-splunk/extslos"
 	_ "go.uber.org/automaxprocs" // Importing automaxprocs automatically adjusts GOMAXPROCS.
-	"strings"
 )
 
 const (
 	contentType         = "Content-Type"
 	applciationJsonType = "application/json"
 )
+
+var startedAt = time.Now().Format(time.RFC3339)
 
 func main() {
 	extlogging.InitZeroLog()
@@ -46,14 +50,14 @@ func main() {
 	config.ValidateConfiguration()
 	initRestyClient()
 
-	exthttp.RegisterHttpHandler("/", exthttp.GetterAsHandler(getExtensionList))
-
 	discovery_kit_sdk.Register(extdetectors.NewDetectorDiscovery())
 	action_kit_sdk.RegisterAction(extdetectors.NewDetectorStateCheckAction())
 	extevents.RegisterEventListenerHandlers()
 
 	discovery_kit_sdk.Register(extslos.NewSLODiscovery())
 	action_kit_sdk.RegisterAction(extslos.NewSloStateCheckAction())
+
+	exthttp.RegisterHttpHandler("/", exthttp.IfNoneMatchHandler(func() string { return startedAt }, exthttp.GetterAsHandler(getExtensionList)))
 
 	extsignals.ActivateSignalHandlers()
 
