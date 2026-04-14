@@ -63,45 +63,45 @@ func (m *SloStateCheckAction) Describe() action_kit_api.ActionDescription {
 		Label:       "Check SLO Alerts",
 		Description: "Check if the slo have active alerts.",
 		Version:     extbuild.GetSemverVersionStringOrUnknown(),
-		Icon:        extutil.Ptr(targetIcon),
-		TargetSelection: extutil.Ptr(action_kit_api.TargetSelection{
+		Icon:        new(targetIcon),
+		TargetSelection: new(action_kit_api.TargetSelection{
 			TargetType:          TargetType,
 			QuantityRestriction: extutil.Ptr(action_kit_api.QuantityRestrictionAll),
-			SelectionTemplates: extutil.Ptr([]action_kit_api.TargetSelectionTemplate{
+			SelectionTemplates: new([]action_kit_api.TargetSelectionTemplate{
 				{
 					Label:       "default",
-					Description: extutil.Ptr("Find SLO by id"),
+					Description: new("Find SLO by id"),
 					Query:       "splunk.slo.id=\"\"",
 				},
 			}),
 		}),
-		Technology:  extutil.Ptr("Splunk"),
-		Category:    extutil.Ptr("Splunk"),
+		Technology:  new("Splunk"),
+		Category:    new("Splunk"),
 		Kind:        action_kit_api.Check,
 		TimeControl: action_kit_api.TimeControlInternal,
 		Parameters: []action_kit_api.ActionParameter{
 			{
 				Name:         "duration",
 				Label:        "Duration",
-				Description:  extutil.Ptr(""),
+				Description:  new(""),
 				Type:         action_kit_api.ActionParameterTypeDuration,
-				DefaultValue: extutil.Ptr("30s"),
-				Required:     extutil.Ptr(true),
+				DefaultValue: new("30s"),
+				Required:     new(true),
 			},
 			{
 				Name:         "checkNewAlertsOnly",
 				Label:        "Check New Alerts Only",
-				Description:  extutil.Ptr(""),
+				Description:  new(""),
 				Type:         action_kit_api.ActionParameterTypeBoolean,
-				DefaultValue: extutil.Ptr("false"),
-				Required:     extutil.Ptr(false),
+				DefaultValue: new("false"),
+				Required:     new(false),
 			},
 			{
 				Name:        "expectedStateList",
 				Label:       "Expected SLO Alerts triggered",
-				Description: extutil.Ptr(""),
+				Description: new(""),
 				Type:        action_kit_api.ActionParameterTypeString,
-				Options: extutil.Ptr([]action_kit_api.ParameterOption{
+				Options: new([]action_kit_api.ParameterOption{
 					action_kit_api.ExplicitParameterOption{
 						Label: "No Alert",
 						Value: noAlerts,
@@ -119,16 +119,16 @@ func (m *SloStateCheckAction) Describe() action_kit_api.ActionDescription {
 						Value: errorBudgetLeftAlertsTriggered,
 					},
 				}),
-				Required: extutil.Ptr(true),
-				Order:    extutil.Ptr(2),
+				Required: new(true),
+				Order:    new(2),
 			},
 			{
 				Name:         "stateCheckMode",
 				Label:        "State Check Mode",
-				Description:  extutil.Ptr("How often should the state be checked ?"),
+				Description:  new("How often should the state be checked ?"),
 				Type:         action_kit_api.ActionParameterTypeString,
-				DefaultValue: extutil.Ptr(stateCheckModeAllTheTime),
-				Options: extutil.Ptr([]action_kit_api.ParameterOption{
+				DefaultValue: new(stateCheckModeAllTheTime),
+				Options: new([]action_kit_api.ParameterOption{
 					action_kit_api.ExplicitParameterOption{
 						Label: "All the time",
 						Value: stateCheckModeAllTheTime,
@@ -138,11 +138,11 @@ func (m *SloStateCheckAction) Describe() action_kit_api.ActionDescription {
 						Value: stateCheckModeAtLeastOnce,
 					},
 				}),
-				Required: extutil.Ptr(true),
-				Order:    extutil.Ptr(3),
+				Required: new(true),
+				Order:    new(3),
 			},
 		},
-		Widgets: extutil.Ptr([]action_kit_api.Widget{
+		Widgets: new([]action_kit_api.Widget{
 			action_kit_api.StateOverTimeWidget{
 				Type:  action_kit_api.ComSteadybitWidgetStateOverTime,
 				Title: "Splunk SLO Active Alerts",
@@ -158,16 +158,16 @@ func (m *SloStateCheckAction) Describe() action_kit_api.ActionDescription {
 				Tooltip: action_kit_api.StateOverTimeWidgetTooltipConfig{
 					From: "tooltip",
 				},
-				Url: extutil.Ptr(action_kit_api.StateOverTimeWidgetUrlConfig{
-					From: extutil.Ptr("url"),
+				Url: new(action_kit_api.StateOverTimeWidgetUrlConfig{
+					From: new("url"),
 				}),
-				Value: extutil.Ptr(action_kit_api.StateOverTimeWidgetValueConfig{
-					Hide: extutil.Ptr(true),
+				Value: new(action_kit_api.StateOverTimeWidgetValueConfig{
+					Hide: new(true),
 				}),
 			},
 		}),
-		Status: extutil.Ptr(action_kit_api.MutatingEndpointReferenceWithCallInterval{
-			CallInterval: extutil.Ptr("2s"),
+		Status: new(action_kit_api.MutatingEndpointReferenceWithCallInterval{
+			CallInterval: new("2s"),
 		}),
 	}
 }
@@ -175,7 +175,7 @@ func (m *SloStateCheckAction) Describe() action_kit_api.ActionDescription {
 func (m *SloStateCheckAction) Prepare(_ context.Context, state *SloCheckState, request action_kit_api.PrepareActionRequestBody) (*action_kit_api.PrepareResult, error) {
 	SLOId := request.Target.Attributes[attributeID]
 	if len(SLOId) == 0 {
-		return nil, extutil.Ptr(extension_kit.ToError("Target is missing the '"+attributeID+"' attribute.", nil))
+		return nil, new(extension_kit.ToError("Target is missing the '"+attributeID+"' attribute.", nil))
 	}
 
 	duration := request.Config["duration"].(float64)
@@ -249,7 +249,7 @@ func SLOCheckStatus(ctx context.Context, state *SloCheckState, client *resty.Cli
 		Post("/v2/slo/search")
 
 	if err != nil {
-		return nil, extutil.Ptr(extension_kit.ToError(fmt.Sprintf("Failed to retrieve SLOs from Splunk for ID %s. Full response: %v", state.SloID, res.String()), err))
+		return nil, new(extension_kit.ToError(fmt.Sprintf("Failed to retrieve SLOs from Splunk for ID %s. Full response: %v", state.SloID, res.String()), err))
 	}
 
 	if !res.IsSuccess() {
@@ -271,7 +271,7 @@ func SLOCheckStatus(ctx context.Context, state *SloCheckState, client *resty.Cli
 
 	if state.StateCheckMode == stateCheckModeAllTheTime {
 		if slosFound.Count == 0 {
-			checkError = extutil.Ptr(action_kit_api.ActionKitError{
+			checkError = new(action_kit_api.ActionKitError{
 				Title: fmt.Sprintf("The SLO '%s' was not found with the expected state '%s'.",
 					state.SloName,
 					state.ExpectedState),
@@ -284,7 +284,7 @@ func SLOCheckStatus(ctx context.Context, state *SloCheckState, client *resty.Cli
 		}
 
 		if completed && !state.StateCheckSuccess {
-			checkError = extutil.Ptr(action_kit_api.ActionKitError{
+			checkError = new(action_kit_api.ActionKitError{
 				Title: fmt.Sprintf("The SLO '%s'  didn't triggered this type of alerts '%s' at least once.",
 					state.SloName,
 					state.ExpectedState),
@@ -301,7 +301,7 @@ func SLOCheckStatus(ctx context.Context, state *SloCheckState, client *resty.Cli
 	return &action_kit_api.StatusResult{
 		Completed: completed,
 		Error:     checkError,
-		Metrics:   extutil.Ptr(metrics),
+		Metrics:   new(metrics),
 	}, nil
 }
 
@@ -319,8 +319,8 @@ func toMetric(expectedState string, slo Slo, now time.Time) *action_kit_api.Metr
 		state = "danger"
 	}
 
-	return extutil.Ptr(action_kit_api.Metric{
-		Name: extutil.Ptr("splunk_detector_incident_state"),
+	return new(action_kit_api.Metric{
+		Name: new("splunk_detector_incident_state"),
 		Metric: map[string]string{
 			"splunk.metric.id":    slo.ID + "-" + expectedState,
 			"splunk.metric.label": expectedState,

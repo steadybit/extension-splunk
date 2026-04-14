@@ -24,7 +24,7 @@ func dummyPrepareRequest(duration float64, expectedState, stateCheckMode string,
 				attributeName: {"Detector One"},
 			},
 		},
-		Config: map[string]interface{}{
+		Config: map[string]any{
 			"duration":              duration,
 			"expectedStateList":     expectedState,
 			"stateCheckMode":        stateCheckMode,

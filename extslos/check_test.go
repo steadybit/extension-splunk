@@ -49,7 +49,7 @@ func TestPrepare(t *testing.T) {
 				attributeName: {"SLO One"},
 			},
 		},
-		Config: map[string]interface{}{
+		Config: map[string]any{
 			"duration":           30000.0, // milliseconds
 			"expectedStateList":  breachAlertsTriggered,
 			"stateCheckMode":     stateCheckModeAllTheTime,
