@@ -13,32 +13,32 @@ type Response struct {
 }
 
 type Detector struct {
-	AuthorizedWriters            AuthorizedWriters      `json:"authorizedWriters"`
-	AutoOptimizationDisabled     bool                   `json:"autoOptimizationDisabled"`
-	Created                      int64                  `json:"created"`
-	Creator                      string                 `json:"creator"`
-	CustomProperties             map[string]interface{} `json:"customProperties"`
-	Description                  string                 `json:"description"`
-	DetectorOrigin               string                 `json:"detectorOrigin"`
-	ID                           string                 `json:"id"`
-	ImportQualifiers             []ImportQualifier      `json:"importQualifiers"`
-	LabelResolutions             map[string]int         `json:"labelResolutions"`
-	LastOptimized                int64                  `json:"lastOptimized"`
-	LastUpdated                  int64                  `json:"lastUpdated"`
-	LastUpdatedBy                string                 `json:"lastUpdatedBy"`
-	MaxDelay                     int64                  `json:"maxDelay"`
-	MinDelay                     *int64                 `json:"minDelay"` // pointer to handle null values
-	Name                         string                 `json:"name"`
-	OverMTSLimit                 bool                   `json:"overMTSLimit"`
-	PackageSpecifications        string                 `json:"packageSpecifications"`
-	ProgramText                  string                 `json:"programText"`
-	Rules                        []Rule                 `json:"rules"`
-	SFMetricsInObjectProgramText []string               `json:"sf_metricsInObjectProgramText"`
-	Status                       string                 `json:"status"`
-	Tags                         []string               `json:"tags"`
-	Teams                        []string               `json:"teams"`
-	Timezone                     *string                `json:"timezone"` // pointer to handle null values
-	VisualizationOptions         VisualizationOptions   `json:"visualizationOptions"`
+	AuthorizedWriters            AuthorizedWriters    `json:"authorizedWriters"`
+	AutoOptimizationDisabled     bool                 `json:"autoOptimizationDisabled"`
+	Created                      int64                `json:"created"`
+	Creator                      string               `json:"creator"`
+	CustomProperties             map[string]any       `json:"customProperties"`
+	Description                  string               `json:"description"`
+	DetectorOrigin               string               `json:"detectorOrigin"`
+	ID                           string               `json:"id"`
+	ImportQualifiers             []ImportQualifier    `json:"importQualifiers"`
+	LabelResolutions             map[string]int       `json:"labelResolutions"`
+	LastOptimized                int64                `json:"lastOptimized"`
+	LastUpdated                  int64                `json:"lastUpdated"`
+	LastUpdatedBy                string               `json:"lastUpdatedBy"`
+	MaxDelay                     int64                `json:"maxDelay"`
+	MinDelay                     *int64               `json:"minDelay"` // pointer to handle null values
+	Name                         string               `json:"name"`
+	OverMTSLimit                 bool                 `json:"overMTSLimit"`
+	PackageSpecifications        string               `json:"packageSpecifications"`
+	ProgramText                  string               `json:"programText"`
+	Rules                        []Rule               `json:"rules"`
+	SFMetricsInObjectProgramText []string             `json:"sf_metricsInObjectProgramText"`
+	Status                       string               `json:"status"`
+	Tags                         []string             `json:"tags"`
+	Teams                        []string             `json:"teams"`
+	Timezone                     *string              `json:"timezone"` // pointer to handle null values
+	VisualizationOptions         VisualizationOptions `json:"visualizationOptions"`
 }
 
 type AuthorizedWriters struct {
@@ -59,13 +59,13 @@ type Filter struct {
 }
 
 type Rule struct {
-	Description          string        `json:"description"`
-	DetectLabel          string        `json:"detectLabel"`
-	Disabled             bool          `json:"disabled"`
-	Notifications        []interface{} `json:"notifications"`
-	ParameterizedBody    string        `json:"parameterizedBody,omitempty"`
-	ParameterizedSubject string        `json:"parameterizedSubject,omitempty"`
-	Severity             string        `json:"severity"`
+	Description          string `json:"description"`
+	DetectLabel          string `json:"detectLabel"`
+	Disabled             bool   `json:"disabled"`
+	Notifications        []any  `json:"notifications"`
+	ParameterizedBody    string `json:"parameterizedBody,omitempty"`
+	ParameterizedSubject string `json:"parameterizedSubject,omitempty"`
+	Severity             string `json:"severity"`
 }
 
 type VisualizationOptions struct {
@@ -108,17 +108,17 @@ type Incident struct {
 }
 
 type Event struct {
-	AnomalyState     string                 `json:"anomalyState"`
-	DetectLabel      string                 `json:"detectLabel"`
-	DetectorId       string                 `json:"detectorId"`
-	DetectorName     string                 `json:"detectorName"`
-	EventAnnotations map[string]interface{} `json:"event_annotations"`
-	ID               string                 `json:"id"`
-	IncidentId       string                 `json:"incidentId"`
-	Inputs           map[string]Input       `json:"inputs"`
-	LinkedTeams      []string               `json:"linkedTeams"`
-	Severity         string                 `json:"severity"`
-	Timestamp        int64                  `json:"timestamp"`
+	AnomalyState     string           `json:"anomalyState"`
+	DetectLabel      string           `json:"detectLabel"`
+	DetectorId       string           `json:"detectorId"`
+	DetectorName     string           `json:"detectorName"`
+	EventAnnotations map[string]any   `json:"event_annotations"`
+	ID               string           `json:"id"`
+	IncidentId       string           `json:"incidentId"`
+	Inputs           map[string]Input `json:"inputs"`
+	LinkedTeams      []string         `json:"linkedTeams"`
+	Severity         string           `json:"severity"`
+	Timestamp        int64            `json:"timestamp"`
 }
 
 type Input struct {

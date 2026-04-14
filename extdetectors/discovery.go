@@ -15,7 +15,6 @@ import (
 	"github.com/steadybit/discovery-kit/go/discovery_kit_commons"
 	"github.com/steadybit/discovery-kit/go/discovery_kit_sdk"
 	"github.com/steadybit/extension-kit/extbuild"
-	"github.com/steadybit/extension-kit/extutil"
 	"github.com/steadybit/extension-splunk/config"
 	"time"
 )
@@ -54,7 +53,7 @@ func (d *detectorDiscovery) Describe() discovery_kit_api.DiscoveryDescription {
 	return discovery_kit_api.DiscoveryDescription{
 		Id: TargetType,
 		Discover: discovery_kit_api.DescribingEndpointReferenceWithCallInterval{
-			CallInterval: extutil.Ptr("1m"),
+			CallInterval: new("1m"),
 		},
 	}
 }
@@ -63,9 +62,9 @@ func (d *detectorDiscovery) DescribeTarget() discovery_kit_api.TargetDescription
 	return discovery_kit_api.TargetDescription{
 		Id:       TargetType,
 		Label:    discovery_kit_api.PluralLabel{One: "Splunk detector", Other: "Splunk detectors"},
-		Category: extutil.Ptr("monitoring"),
+		Category: new("monitoring"),
 		Version:  extbuild.GetSemverVersionStringOrUnknown(),
-		Icon:     extutil.Ptr(targetIcon),
+		Icon:     new(targetIcon),
 		Table: discovery_kit_api.Table{
 			Columns: []discovery_kit_api.Column{
 				{Attribute: attributeName},

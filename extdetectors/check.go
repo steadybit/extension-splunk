@@ -63,45 +63,45 @@ func (m *DetectorStateCheckAction) Describe() action_kit_api.ActionDescription {
 		Label:       "Check Detector Incidents",
 		Description: "Check if the detector have active incidents.",
 		Version:     extbuild.GetSemverVersionStringOrUnknown(),
-		Icon:        extutil.Ptr(targetIcon),
-		TargetSelection: extutil.Ptr(action_kit_api.TargetSelection{
+		Icon:        new(targetIcon),
+		TargetSelection: new(action_kit_api.TargetSelection{
 			TargetType:          TargetType,
 			QuantityRestriction: extutil.Ptr(action_kit_api.QuantityRestrictionAll),
-			SelectionTemplates: extutil.Ptr([]action_kit_api.TargetSelectionTemplate{
+			SelectionTemplates: new([]action_kit_api.TargetSelectionTemplate{
 				{
 					Label:       "default",
-					Description: extutil.Ptr("Find Detector by id"),
+					Description: new("Find Detector by id"),
 					Query:       "splunk.detector.id=\"\"",
 				},
 			}),
 		}),
-		Technology:  extutil.Ptr("Splunk"),
-		Category:    extutil.Ptr("Splunk"),
+		Technology:  new("Splunk"),
+		Category:    new("Splunk"),
 		Kind:        action_kit_api.Check,
 		TimeControl: action_kit_api.TimeControlInternal,
 		Parameters: []action_kit_api.ActionParameter{
 			{
 				Name:         "duration",
 				Label:        "Duration",
-				Description:  extutil.Ptr(""),
+				Description:  new(""),
 				Type:         action_kit_api.ActionParameterTypeDuration,
-				DefaultValue: extutil.Ptr("30s"),
-				Required:     extutil.Ptr(true),
+				DefaultValue: new("30s"),
+				Required:     new(true),
 			},
 			{
 				Name:         "checkNewIncidentsOnly",
 				Label:        "Check New Incidents Only",
-				Description:  extutil.Ptr(""),
+				Description:  new(""),
 				Type:         action_kit_api.ActionParameterTypeBoolean,
-				DefaultValue: extutil.Ptr("false"),
-				Required:     extutil.Ptr(false),
+				DefaultValue: new("false"),
+				Required:     new(false),
 			},
 			{
 				Name:        "expectedStateList",
 				Label:       "Expected Incident Anomaly State",
-				Description: extutil.Ptr(""),
+				Description: new(""),
 				Type:        action_kit_api.ActionParameterTypeString,
-				Options: extutil.Ptr([]action_kit_api.ParameterOption{
+				Options: new([]action_kit_api.ParameterOption{
 					action_kit_api.ExplicitParameterOption{
 						Label: "No Incidents At All",
 						Value: NoIncident,
@@ -123,16 +123,16 @@ func (m *DetectorStateCheckAction) Describe() action_kit_api.ActionDescription {
 						Value: Stopped,
 					},
 				}),
-				Required: extutil.Ptr(true),
-				Order:    extutil.Ptr(2),
+				Required: new(true),
+				Order:    new(2),
 			},
 			{
 				Name:         "stateCheckMode",
 				Label:        "State Check Mode",
-				Description:  extutil.Ptr("How often should the state be checked ?"),
+				Description:  new("How often should the state be checked ?"),
 				Type:         action_kit_api.ActionParameterTypeString,
-				DefaultValue: extutil.Ptr(stateCheckModeAllTheTime),
-				Options: extutil.Ptr([]action_kit_api.ParameterOption{
+				DefaultValue: new(stateCheckModeAllTheTime),
+				Options: new([]action_kit_api.ParameterOption{
 					action_kit_api.ExplicitParameterOption{
 						Label: "All the time",
 						Value: stateCheckModeAllTheTime,
@@ -142,11 +142,11 @@ func (m *DetectorStateCheckAction) Describe() action_kit_api.ActionDescription {
 						Value: stateCheckModeAtLeastOnce,
 					},
 				}),
-				Required: extutil.Ptr(true),
-				Order:    extutil.Ptr(3),
+				Required: new(true),
+				Order:    new(3),
 			},
 		},
-		Widgets: extutil.Ptr([]action_kit_api.Widget{
+		Widgets: new([]action_kit_api.Widget{
 			action_kit_api.StateOverTimeWidget{
 				Type:  action_kit_api.ComSteadybitWidgetStateOverTime,
 				Title: "Splunk Detector Incidents State",
@@ -162,16 +162,16 @@ func (m *DetectorStateCheckAction) Describe() action_kit_api.ActionDescription {
 				Tooltip: action_kit_api.StateOverTimeWidgetTooltipConfig{
 					From: "tooltip",
 				},
-				Url: extutil.Ptr(action_kit_api.StateOverTimeWidgetUrlConfig{
-					From: extutil.Ptr("url"),
+				Url: new(action_kit_api.StateOverTimeWidgetUrlConfig{
+					From: new("url"),
 				}),
-				Value: extutil.Ptr(action_kit_api.StateOverTimeWidgetValueConfig{
-					Hide: extutil.Ptr(true),
+				Value: new(action_kit_api.StateOverTimeWidgetValueConfig{
+					Hide: new(true),
 				}),
 			},
 		}),
-		Status: extutil.Ptr(action_kit_api.MutatingEndpointReferenceWithCallInterval{
-			CallInterval: extutil.Ptr("1s"),
+		Status: new(action_kit_api.MutatingEndpointReferenceWithCallInterval{
+			CallInterval: new("1s"),
 		}),
 	}
 }
@@ -179,7 +179,7 @@ func (m *DetectorStateCheckAction) Describe() action_kit_api.ActionDescription {
 func (m *DetectorStateCheckAction) Prepare(_ context.Context, state *DetectorCheckState, request action_kit_api.PrepareActionRequestBody) (*action_kit_api.PrepareResult, error) {
 	DetectorId := request.Target.Attributes[attributeID]
 	if len(DetectorId) == 0 {
-		return nil, extutil.Ptr(extension_kit.ToError("Target is missing the '"+attributeID+"' attribute.", nil))
+		return nil, new(extension_kit.ToError("Target is missing the '"+attributeID+"' attribute.", nil))
 	}
 
 	duration := request.Config["duration"].(float64)
@@ -229,7 +229,7 @@ func DetectorCheckStatus(ctx context.Context, state *DetectorCheckState, client 
 		Get(uri)
 
 	if err != nil {
-		return nil, extutil.Ptr(extension_kit.ToError(fmt.Sprintf("Failed to retrieve detector incidents from Splunk for detector %s with uri %s. Full response: %v", state.DetectorId, uri, res.String()), err))
+		return nil, new(extension_kit.ToError(fmt.Sprintf("Failed to retrieve detector incidents from Splunk for detector %s with uri %s. Full response: %v", state.DetectorId, uri, res.String()), err))
 	}
 
 	if !res.IsSuccess() {
@@ -253,7 +253,7 @@ func DetectorCheckStatus(ctx context.Context, state *DetectorCheckState, client 
 		if state.StateCheckMode == stateCheckModeAllTheTime {
 			for _, incident := range incidents {
 				if state.ExpectedState != incident.AnomalyState {
-					checkError = extutil.Ptr(action_kit_api.ActionKitError{
+					checkError = new(action_kit_api.ActionKitError{
 						Title: fmt.Sprintf("One of the incidents of the detector '%s' has state '%s' whereas '%s' is expected.",
 							state.DetectorName,
 							incident.AnomalyState,
@@ -265,7 +265,7 @@ func DetectorCheckStatus(ctx context.Context, state *DetectorCheckState, client 
 			}
 			if state.ExpectedState != NoIncident {
 				if len(incidents) == 0 {
-					checkError = extutil.Ptr(action_kit_api.ActionKitError{
+					checkError = new(action_kit_api.ActionKitError{
 						Title: fmt.Sprintf("No incidents found for detector '%s' whereas incident(s) with '%s' state is expected.",
 							state.DetectorName,
 							state.ExpectedState),
@@ -281,7 +281,7 @@ func DetectorCheckStatus(ctx context.Context, state *DetectorCheckState, client 
 			}
 
 			if completed && !state.StateCheckSuccess {
-				checkError = extutil.Ptr(action_kit_api.ActionKitError{
+				checkError = new(action_kit_api.ActionKitError{
 					Title: fmt.Sprintf("Detector '%s' incidents didn't have status '%s' at least once.",
 						state.DetectorName,
 						state.ExpectedState),
@@ -299,7 +299,7 @@ func DetectorCheckStatus(ctx context.Context, state *DetectorCheckState, client 
 	return &action_kit_api.StatusResult{
 		Completed: completed,
 		Error:     checkError,
-		Metrics:   extutil.Ptr(metrics),
+		Metrics:   new(metrics),
 	}, nil
 }
 
@@ -323,8 +323,8 @@ func toMetric(detectorID string, detectorName string, incident Incident, now tim
 		state = "info"
 	}
 
-	return extutil.Ptr(action_kit_api.Metric{
-		Name: extutil.Ptr("splunk_detector_incident_state"),
+	return new(action_kit_api.Metric{
+		Name: new("splunk_detector_incident_state"),
 		Metric: map[string]string{
 			"splunk.metric.id":    detectorID,
 			"splunk.metric.label": detectorName,
