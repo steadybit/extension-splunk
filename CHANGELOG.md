@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.0.11
+
+- build(deps): bump alpine from 3.23 to 3.24
+- chore(deps): bump golang.org/x/net to v0.55.0 (CVE-2026-39821) (#50)
+
 ## v1.0.10
 
 - chore: update to go 1.26.4
