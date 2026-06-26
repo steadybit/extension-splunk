@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- fix: guard the detector and SLO checks against targets missing the name attribute instead of panicking
+
 ## v1.0.12
 
 

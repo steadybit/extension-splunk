@@ -177,8 +177,8 @@ func (m *DetectorStateCheckAction) Describe() action_kit_api.ActionDescription {
 }
 
 func (m *DetectorStateCheckAction) Prepare(_ context.Context, state *DetectorCheckState, request action_kit_api.PrepareActionRequestBody) (*action_kit_api.PrepareResult, error) {
-	DetectorId := request.Target.Attributes[attributeID]
-	if len(DetectorId) == 0 {
+	detectorId := request.Target.Attributes[attributeID]
+	if len(detectorId) == 0 {
 		return nil, new(extension_kit.ToError("Target is missing the '"+attributeID+"' attribute.", nil))
 	}
 
@@ -200,8 +200,13 @@ func (m *DetectorStateCheckAction) Prepare(_ context.Context, state *DetectorChe
 		state.CheckNewIncidentsOnly = extutil.ToBool(request.Config["checkNewIncidentsOnly"])
 	}
 
-	state.DetectorId = DetectorId[0]
-	state.DetectorName = request.Target.Attributes[attributeName][0]
+	detectorName := request.Target.Attributes[attributeName]
+	if len(detectorName) == 0 {
+		return nil, new(extension_kit.ToError("Target is missing the '"+attributeName+"' attribute.", nil))
+	}
+
+	state.DetectorId = detectorId[0]
+	state.DetectorName = detectorName[0]
 	state.Start = start
 	state.End = end
 	state.ExpectedState = expectedState
