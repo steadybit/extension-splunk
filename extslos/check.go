@@ -173,8 +173,8 @@ func (m *SloStateCheckAction) Describe() action_kit_api.ActionDescription {
 }
 
 func (m *SloStateCheckAction) Prepare(_ context.Context, state *SloCheckState, request action_kit_api.PrepareActionRequestBody) (*action_kit_api.PrepareResult, error) {
-	SLOId := request.Target.Attributes[attributeID]
-	if len(SLOId) == 0 {
+	sloId := request.Target.Attributes[attributeID]
+	if len(sloId) == 0 {
 		return nil, new(extension_kit.ToError("Target is missing the '"+attributeID+"' attribute.", nil))
 	}
 
@@ -196,8 +196,13 @@ func (m *SloStateCheckAction) Prepare(_ context.Context, state *SloCheckState, r
 		state.CheckNewAlertsOnly = extutil.ToBool(request.Config["checkNewAlertsOnly"])
 	}
 
-	state.SloID = SLOId[0]
-	state.SloName = request.Target.Attributes[attributeName][0]
+	sloName := request.Target.Attributes[attributeName]
+	if len(sloName) == 0 {
+		return nil, new(extension_kit.ToError("Target is missing the '"+attributeName+"' attribute.", nil))
+	}
+
+	state.SloID = sloId[0]
+	state.SloName = sloName[0]
 	state.Start = start
 	state.End = end
 	state.ExpectedState = expectedState
