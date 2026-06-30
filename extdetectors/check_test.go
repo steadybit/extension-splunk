@@ -185,6 +185,7 @@ func TestStatus_AllTheTime_Failure(t *testing.T) {
 		End:                   time.Now().Add(2 * time.Minute),
 		ExpectedState:         Anomalous,
 		StateCheckMode:        stateCheckModeAllTheTime,
+		FailEarly:             true,
 	}
 
 	statusResult, err := DetectorCheckStatus(context.Background(), &state, RestyClient)
@@ -195,6 +196,55 @@ func TestStatus_AllTheTime_Failure(t *testing.T) {
 		t.Errorf("Expected error due to mismatching incident state, but got nil")
 	} else if !strings.Contains(statusResult.Error.Title, "has state") {
 		t.Errorf("Unexpected error message: %s", statusResult.Error.Title)
+	}
+}
+
+func TestStatus_AllTheTime_FailAtEnd(t *testing.T) {
+	// Simulate an incident that does not match the expected state.
+	now := time.Now()
+	incident := Incident{
+		AnomalyState:                Ok, // not matching expected Anomalous
+		AnomalyStateUpdateTimestamp: now.Add(-time.Minute).UnixMilli(),
+	}
+	ts := newTestServer([]Incident{incident}, http.StatusOK)
+	defer ts.Close()
+
+	client := resty.New().SetBaseURL(ts.URL)
+	RestyClient = client
+
+	state := DetectorCheckState{
+		DetectorId:     "detector1",
+		DetectorName:   "Detector One",
+		Start:          now.Add(-2 * time.Minute),
+		End:            now.Add(2 * time.Minute), // not yet completed
+		ExpectedState:  Anomalous,
+		StateCheckMode: stateCheckModeAllTheTime,
+		FailEarly:      false,
+	}
+
+	// Not completed: a deviation is observed but must not fail early.
+	statusResult, err := DetectorCheckStatus(context.Background(), &state, RestyClient)
+	if err != nil {
+		t.Fatalf("DetectorCheckStatus returned error: %v", err)
+	}
+	if statusResult.Error != nil {
+		t.Errorf("Expected no error before the step ends (fail early disabled), got %s", statusResult.Error.Title)
+	}
+	if !state.DeviationSeen {
+		t.Error("Expected the deviation to be remembered")
+	}
+
+	// Completed: the remembered deviation is reported with the past-tense message.
+	state.End = now.Add(-time.Second)
+	statusResult, err = DetectorCheckStatus(context.Background(), &state, RestyClient)
+	if err != nil {
+		t.Fatalf("DetectorCheckStatus returned error: %v", err)
+	}
+	if statusResult.Error == nil {
+		t.Fatal("Expected an error at the end of the step")
+	}
+	if !strings.Contains(statusResult.Error.Title, "had state") {
+		t.Errorf("Expected past-tense message, got: %s", statusResult.Error.Title)
 	}
 }
 

@@ -47,6 +47,11 @@ type SloCheckState struct {
 	ExpectedState      string
 	StateCheckMode     string
 	StateCheckSuccess  bool
+	FailEarly          bool
+	// DeviationSeen and DeviationTitle are used in 'fail at end' mode (FailEarly = false) to remember
+	// that a deviating state was observed during the step so the failure can be reported once the step ends.
+	DeviationSeen  bool
+	DeviationTitle string
 }
 
 func NewSloStateCheckAction() action_kit_sdk.Action[SloCheckState] {
@@ -141,6 +146,16 @@ func (m *SloStateCheckAction) Describe() action_kit_api.ActionDescription {
 				Required: new(true),
 				Order:    new(3),
 			},
+			{
+				Name:         "failEarly",
+				Label:        "Fail early",
+				Description:  new("If enabled, the check fails as soon as a deviating state is observed. If disabled, the check keeps collecting events for the whole duration and only fails at the end of the step. Only affects the 'All the time' mode; 'At least once' can only be evaluated at the end of the step."),
+				Type:         action_kit_api.ActionParameterTypeBoolean,
+				DefaultValue: new("true"),
+				Advanced:     new(true),
+				Required:     new(false),
+				Order:        new(4),
+			},
 		},
 		Widgets: new([]action_kit_api.Widget{
 			action_kit_api.StateOverTimeWidget{
@@ -199,6 +214,12 @@ func (m *SloStateCheckAction) Prepare(_ context.Context, state *SloCheckState, r
 	sloName := request.Target.Attributes[attributeName]
 	if len(sloName) == 0 {
 		return nil, new(extension_kit.ToError("Target is missing the '"+attributeName+"' attribute.", nil))
+	}
+
+	// Default to failing early to preserve the previous behavior for experiments that don't set this parameter.
+	state.FailEarly = true
+	if request.Config["failEarly"] != nil {
+		state.FailEarly = extutil.ToBool(request.Config["failEarly"])
 	}
 
 	state.SloID = sloId[0]
@@ -276,10 +297,24 @@ func SLOCheckStatus(ctx context.Context, state *SloCheckState, client *resty.Cli
 
 	if state.StateCheckMode == stateCheckModeAllTheTime {
 		if slosFound.Count == 0 {
+			// The message is already phrased in the past tense, so it reads correctly whether reported
+			// immediately (fail early) or at the end of the step (fail at end).
+			title := fmt.Sprintf("The SLO '%s' was not found with the expected state '%s'.",
+				state.SloName,
+				state.ExpectedState)
+			if state.FailEarly {
+				checkError = new(action_kit_api.ActionKitError{
+					Title:  title,
+					Status: extutil.Ptr(action_kit_api.Failed),
+				})
+			} else {
+				state.DeviationSeen = true
+				state.DeviationTitle = title
+			}
+		}
+		if !state.FailEarly && completed && state.DeviationSeen {
 			checkError = new(action_kit_api.ActionKitError{
-				Title: fmt.Sprintf("The SLO '%s' was not found with the expected state '%s'.",
-					state.SloName,
-					state.ExpectedState),
+				Title:  state.DeviationTitle,
 				Status: extutil.Ptr(action_kit_api.Failed),
 			})
 		}

@@ -105,6 +105,7 @@ func TestStatus_AllTheTime_NoResult(t *testing.T) {
 		End:                now.Add(time.Minute),
 		ExpectedState:      breachAlertsTriggered,
 		StateCheckMode:     stateCheckModeAllTheTime,
+		FailEarly:          true,
 	}
 	// Simulate an empty response.
 	respStruct := Response{
@@ -125,6 +126,50 @@ func TestStatus_AllTheTime_NoResult(t *testing.T) {
 	if statusResult.Error == nil {
 		t.Errorf("Expected error due to no SLO found, got nil")
 	} else if !strings.Contains(statusResult.Error.Title, "was not found") {
+		t.Errorf("Unexpected error message: %s", statusResult.Error.Title)
+	}
+}
+
+func TestStatus_AllTheTime_FailAtEnd(t *testing.T) {
+	now := time.Now()
+	state := SloCheckState{
+		SloID:          "slo1",
+		SloName:        "SLO One",
+		Start:          now.Add(-time.Minute),
+		End:            now.Add(time.Minute), // not yet completed
+		ExpectedState:  breachAlertsTriggered,
+		StateCheckMode: stateCheckModeAllTheTime,
+		FailEarly:      false,
+	}
+	respBytes, _ := json.Marshal(Response{Count: 0, Results: []Slo{}})
+	ts := newTestServer(respBytes, http.StatusOK)
+	defer ts.Close()
+
+	client := resty.New().SetBaseURL(ts.URL)
+	RestyClient = client
+
+	// Not completed: the deviation must not fail early.
+	statusResult, err := SLOCheckStatus(context.Background(), &state, RestyClient)
+	if err != nil {
+		t.Fatalf("SLOCheckStatus returned error: %v", err)
+	}
+	if statusResult.Error != nil {
+		t.Errorf("Expected no error before the step ends (fail early disabled), got %s", statusResult.Error.Title)
+	}
+	if !state.DeviationSeen {
+		t.Error("Expected the deviation to be remembered")
+	}
+
+	// Completed: the remembered deviation is reported.
+	state.End = now.Add(-time.Second)
+	statusResult, err = SLOCheckStatus(context.Background(), &state, RestyClient)
+	if err != nil {
+		t.Fatalf("SLOCheckStatus returned error: %v", err)
+	}
+	if statusResult.Error == nil {
+		t.Fatal("Expected an error at the end of the step")
+	}
+	if !strings.Contains(statusResult.Error.Title, "was not found") {
 		t.Errorf("Unexpected error message: %s", statusResult.Error.Title)
 	}
 }

@@ -47,6 +47,11 @@ type DetectorCheckState struct {
 	ExpectedState         string
 	StateCheckMode        string
 	StateCheckSuccess     bool
+	FailEarly             bool
+	// DeviationSeen and DeviationTitle are used in 'fail at end' mode (FailEarly = false) to remember
+	// that a deviating state was observed during the step so the failure can be reported once the step ends.
+	DeviationSeen  bool
+	DeviationTitle string
 }
 
 func NewDetectorStateCheckAction() action_kit_sdk.Action[DetectorCheckState] {
@@ -145,6 +150,16 @@ func (m *DetectorStateCheckAction) Describe() action_kit_api.ActionDescription {
 				Required: new(true),
 				Order:    new(3),
 			},
+			{
+				Name:         "failEarly",
+				Label:        "Fail early",
+				Description:  new("If enabled, the check fails as soon as a deviating state is observed. If disabled, the check keeps collecting events for the whole duration and only fails at the end of the step. Only affects the 'All the time' mode; 'At least once' can only be evaluated at the end of the step."),
+				Type:         action_kit_api.ActionParameterTypeBoolean,
+				DefaultValue: new("true"),
+				Advanced:     new(true),
+				Required:     new(false),
+				Order:        new(4),
+			},
 		},
 		Widgets: new([]action_kit_api.Widget{
 			action_kit_api.StateOverTimeWidget{
@@ -205,6 +220,12 @@ func (m *DetectorStateCheckAction) Prepare(_ context.Context, state *DetectorChe
 		return nil, new(extension_kit.ToError("Target is missing the '"+attributeName+"' attribute.", nil))
 	}
 
+	// Default to failing early to preserve the previous behavior for experiments that don't set this parameter.
+	state.FailEarly = true
+	if request.Config["failEarly"] != nil {
+		state.FailEarly = extutil.ToBool(request.Config["failEarly"])
+	}
+
 	state.DetectorId = detectorId[0]
 	state.DetectorName = detectorName[0]
 	state.Start = start
@@ -254,29 +275,47 @@ func DetectorCheckStatus(ctx context.Context, state *DetectorCheckState, client 
 	completed := now.After(state.End)
 	var checkError *action_kit_api.ActionKitError
 
+	// recordDeviation either fails immediately (fail early) or remembers the deviation so it can be
+	// reported once the step ends (fail at end, using the past-tense message since the state may have
+	// recovered by then).
+	recordDeviation := func(present, past string) {
+		if state.FailEarly {
+			checkError = new(action_kit_api.ActionKitError{
+				Title:  present,
+				Status: extutil.Ptr(action_kit_api.Failed),
+			})
+		} else {
+			state.DeviationSeen = true
+			state.DeviationTitle = past
+		}
+	}
+
 	if len(state.ExpectedState) > 0 {
 		if state.StateCheckMode == stateCheckModeAllTheTime {
 			for _, incident := range incidents {
 				if state.ExpectedState != incident.AnomalyState {
-					checkError = new(action_kit_api.ActionKitError{
-						Title: fmt.Sprintf("One of the incidents of the detector '%s' has state '%s' whereas '%s' is expected.",
-							state.DetectorName,
-							incident.AnomalyState,
-							state.ExpectedState),
-						Status: extutil.Ptr(action_kit_api.Failed),
-					})
+					recordDeviation(
+						fmt.Sprintf("One of the incidents of the detector '%s' has state '%s' whereas '%s' is expected.",
+							state.DetectorName, incident.AnomalyState, state.ExpectedState),
+						fmt.Sprintf("One of the incidents of the detector '%s' had state '%s' whereas '%s' is expected.",
+							state.DetectorName, incident.AnomalyState, state.ExpectedState))
 					break
 				}
 			}
 			if state.ExpectedState != NoIncident {
 				if len(incidents) == 0 {
-					checkError = new(action_kit_api.ActionKitError{
-						Title: fmt.Sprintf("No incidents found for detector '%s' whereas incident(s) with '%s' state is expected.",
-							state.DetectorName,
-							state.ExpectedState),
-						Status: extutil.Ptr(action_kit_api.Failed),
-					})
+					recordDeviation(
+						fmt.Sprintf("No incidents found for detector '%s' whereas incident(s) with '%s' state is expected.",
+							state.DetectorName, state.ExpectedState),
+						fmt.Sprintf("No incidents were found for detector '%s' whereas incident(s) with '%s' state is expected.",
+							state.DetectorName, state.ExpectedState))
 				}
+			}
+			if !state.FailEarly && completed && state.DeviationSeen {
+				checkError = new(action_kit_api.ActionKitError{
+					Title:  state.DeviationTitle,
+					Status: extutil.Ptr(action_kit_api.Failed),
+				})
 			}
 		} else if state.StateCheckMode == stateCheckModeAtLeastOnce {
 			for _, incident := range incidents {
