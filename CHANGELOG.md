@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Add a "Fail early" option to the detector and SLO checks. When enabled (the default, matching the previous behavior), the check fails as soon as a deviating state is observed. When disabled, the check keeps collecting events for the whole duration and only fails at the end of the step (with a past-tense message, since the state may have recovered by then).
 - fix: guard the detector and SLO checks against targets missing the name attribute instead of panicking
 
 ## v1.0.12
