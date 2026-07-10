@@ -6,7 +6,6 @@ package main
 
 import (
 	"strings"
-	"time"
 
 	_ "github.com/KimMachineGun/automemlimit" // By default, it sets `GOMEMLIMIT` to 90% of cgroup's memory limit.
 	"github.com/go-resty/resty/v2"
@@ -35,8 +34,6 @@ const (
 	applciationJsonType = "application/json"
 )
 
-var startedAt = time.Now().Format(time.RFC3339)
-
 func main() {
 	extlogging.InitZeroLog()
 
@@ -57,7 +54,7 @@ func main() {
 	discovery_kit_sdk.Register(extslos.NewSLODiscovery())
 	action_kit_sdk.RegisterAction(extslos.NewSloStateCheckAction())
 
-	exthttp.RegisterHttpHandler("/", exthttp.IfNoneMatchHandler(func() string { return startedAt }, exthttp.GetterAsHandler(getExtensionList)))
+	exthttp.RegisterRevisionedHandler("/", getExtensionList)
 
 	extsignals.ActivateSignalHandlers()
 
