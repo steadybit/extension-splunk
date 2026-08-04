@@ -236,8 +236,17 @@ func (m *DetectorStateCheckAction) Prepare(_ context.Context, state *DetectorChe
 	return nil, nil
 }
 
-func (m *DetectorStateCheckAction) Start(_ context.Context, _ *DetectorCheckState) (*action_kit_api.StartResult, error) {
-	return nil, nil
+func (m *DetectorStateCheckAction) Start(ctx context.Context, state *DetectorCheckState) (*action_kit_api.StartResult, error) {
+	statusResult, err := DetectorCheckStatus(ctx, state, RestyClient)
+	if statusResult == nil {
+		return nil, err
+	}
+	return &action_kit_api.StartResult{
+		Artifacts: statusResult.Artifacts,
+		Error:     statusResult.Error,
+		Messages:  statusResult.Messages,
+		Metrics:   statusResult.Metrics,
+	}, err
 }
 
 func (m *DetectorStateCheckAction) Status(ctx context.Context, state *DetectorCheckState) (*action_kit_api.StatusResult, error) {

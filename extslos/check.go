@@ -232,8 +232,17 @@ func (m *SloStateCheckAction) Prepare(_ context.Context, state *SloCheckState, r
 	return nil, nil
 }
 
-func (m *SloStateCheckAction) Start(_ context.Context, _ *SloCheckState) (*action_kit_api.StartResult, error) {
-	return nil, nil
+func (m *SloStateCheckAction) Start(ctx context.Context, state *SloCheckState) (*action_kit_api.StartResult, error) {
+	statusResult, err := SLOCheckStatus(ctx, state, RestyClient)
+	if statusResult == nil {
+		return nil, err
+	}
+	return &action_kit_api.StartResult{
+		Artifacts: statusResult.Artifacts,
+		Error:     statusResult.Error,
+		Messages:  statusResult.Messages,
+		Metrics:   statusResult.Metrics,
+	}, err
 }
 
 func (m *SloStateCheckAction) Status(ctx context.Context, state *SloCheckState) (*action_kit_api.StatusResult, error) {
