@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.0.15
+
+- feat: support filtering targets out of discovery
+- fix: emit detector/SLO check metrics immediately on Start
+
 ## v1.0.14
 
 - chore(deps): update dependencies
