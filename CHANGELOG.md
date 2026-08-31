@@ -1,5 +1,12 @@
 # Changelog
 
+## v1.0.17
+
+- build(deps): bump github.com/steadybit/action-kit/go/action_kit_test
+- build(deps): bump github.com/steadybit/discovery-kit/go/discovery_kit_test
+- build(deps): bump github.com/stretchr/testify from 1.12.0 to 1.12.1
+- build(deps): bump golang from 1.26-alpine to 1.27-alpine
+
 ## v1.0.16
 
 - build(deps): bump github.com/stretchr/testify from 1.11.1 to 1.12.0
