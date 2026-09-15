@@ -37,6 +37,8 @@ func TestWithMinikube(t *testing.T) {
 		ExtraArgs: func(m *e2e.Minikube) []string {
 			return []string{
 				"--set", fmt.Sprintf("splunk.apiBaseUrl=http://host.minikube.internal:%s", port),
+				"--set", fmt.Sprintf("splunk.ingestBaseUrl=http://host.minikube.internal:%s", port),
+				"--set", "splunk.accessToken=access-token-123",
 				"--set", "logging.level=trace",
 			}
 		},
