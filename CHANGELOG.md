@@ -1,5 +1,9 @@
 # Changelog
 
+## v1.0.21
+
+- build(deps): bump github.com/steadybit/action-kit/go/action_kit_test
+
 ## v1.0.20
 
 - Add OpenTelemetry tracing support
