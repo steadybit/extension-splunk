@@ -1,5 +1,9 @@
 # Changelog
 
+## v1.0.22
+
+- chore(deps): bump golang.org/x/net to v0.61.0
+
 ## v1.0.21
 
 - build(deps): bump github.com/steadybit/action-kit/go/action_kit_test
