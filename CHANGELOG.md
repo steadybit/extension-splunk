@@ -1,5 +1,11 @@
 # Changelog
 
+## v1.0.24
+
+- build(deps): bump github.com/KimMachineGun/automemlimit
+- build(deps): bump github.com/steadybit/action-kit/go/action_kit_test
+- build(deps): bump github.com/steadybit/extension-kit
+
 ## v1.0.23
 
 - Maintenance release
