@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- feat: The detector and SLO checks show Fail early with the other check settings
+
 ## v1.0.24
 
 - build(deps): bump github.com/KimMachineGun/automemlimit
