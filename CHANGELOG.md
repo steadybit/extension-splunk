@@ -1,8 +1,10 @@
 # Changelog
 
-## Unreleased
+## v1.0.25
 
+- chore(deps): bump golang.org/x/net to v0.62.0
 - feat: The detector and SLO checks show Fail early with the other check settings
+- feat: show Fail early with the other check settings
 
 ## v1.0.24
 
