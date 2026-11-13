@@ -1,5 +1,9 @@
 # Changelog
 
+## v1.0.26
+
+- fix: Attack (step target) events now carry the run id in `execution_id` and the experiment key in a new `experiment_key` tag. Previously `execution_id` held the experiment key, so Splunk searches that relied on that value need to be updated.
+
 ## v1.0.25
 
 - chore(deps): bump golang.org/x/net to v0.62.0

@@ -163,7 +163,7 @@ func getTargetTags(target event_kit_api.ExperimentStepTargetExecution) map[strin
 	tags := make(map[string]string)
 
 	tags["execution_id"] = fmt.Sprintf("%.0f", target.ExecutionId)
-	tags["execution_id"] = target.ExperimentKey
+	tags["experiment_key"] = target.ExperimentKey
 	tags["execution_state"] = string(target.State)
 
 	if target.StartedTime != nil {
