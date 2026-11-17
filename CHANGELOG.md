@@ -2,6 +2,11 @@
 
 ## v1.0.26
 
+- build(deps): bump the steadybit group with 2 updates
+- fix: send run id as execution_id and experiment key as experiment_key on attack events (#81)
+
+## v1.0.26
+
 - fix: Attack (step target) events now carry the run id in `execution_id` and the experiment key in a new `experiment_key` tag. Previously `execution_id` held the experiment key, so Splunk searches that relied on that value need to be updated.
 
 ## v1.0.25
